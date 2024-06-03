@@ -1,1 +1,0 @@
-This is dir where scripts will located
