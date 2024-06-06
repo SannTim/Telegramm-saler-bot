@@ -29,3 +29,12 @@ class db_controller:
         cursor.close()
         conn.close()
         return rows
+
+    def add_product(self, name, category_id, price, currency):
+        # Подключение к базе данных
+        conn = sql.connect(self.conn_string)
+        # Создание курсора для выполнения SQL-запросов
+        cursor = conn.cursor()
+
+        select_data_query = f"""INSERT INTO products(name, category, price, currency) VALUES ({name}, {category_id}, {price}, {currency})"""
+    
