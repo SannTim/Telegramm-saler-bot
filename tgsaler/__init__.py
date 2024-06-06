@@ -52,6 +52,7 @@ def form_order(usr, st, id, name):
     ans += "На сумму:" + str(usr["price"]) + "\n" + st
     return ans
 
+
 class group:
 
     def __init__(self, group_data):
@@ -114,3 +115,74 @@ for gr in menu_categories:
 for cat in menu_categories:
     group_markup.add(types.KeyboardButton(cat))
 del tmp_menu_categories
+
+
+@bot.message_handler(content_types="text")
+def category_go(message):
+    global orders_id
+    # print(message.from_user)
+    if message.from_user.id in admin_ids:
+
+        # print("tut")
+
+        for el in all_orders:
+            print(el[: len(message.text)])
+            print(message.text)
+            if el[: len(message.text)] == message.text:
+                bot.send_message(all_orders[el], "Ваш заказ готов!")
+                bot.send_message(
+                    all_orders[el], props["GroupChoosemes"], reply_markup=group_markup
+                )
+                del all_orders[el]
+                orders_send()
+                return
+
+        return
+
+    cid = message.chat.id
+    if message.text in menu_categories:
+        bot.send_message(
+            cid, props["InGroupChoosemes"], reply_markup=group_list[message.text].markup
+        )
+    elif message.text == "Назад":
+        bot.send_message(cid, props["GroupChoosemes"],
+                         reply_markup=group_markup)
+    elif message.text in all_positions:
+        with open(props["users_folder"] + "/" + str(message.from_user.id), "r") as f:
+            usr = json.load(f)
+        if usr["prev"] == "Убрать товар":
+            usr["price"] -= usr["bin"][message.text] * all_prices[message.text]
+            del usr["bin"][message.text]
+
+            with open(
+                props["users_folder"] + "/" + str(message.from_user.id), "w"
+            ) as f:
+                json.dump(usr, f)
+            bot.send_message(cid, props["DoneBin"])
+            bot.send_message(cid, form_bin_mes(
+                usr), reply_markup=groupdone_markup)
+            return
+        try:
+            im = open("images/" + all_images[message.text], "rb")
+            bot.send_photo(cid, im)
+        except:
+            bot.send_message(cid, "Фото появится в сокром времени!")
+        bot.send_message(cid, all_descr[message.text])
+        bot.send_message(cid, "Добавить в корзину?", reply_markup=bin_markup)
+    elif message.text == "Нет":
+        with open(props["users_folder"] + "/" + str(message.from_user.id), "rb") as f:
+            usr = json.load(f)
+            if usr["prev"] in all_positions:
+                for m in menu_categories:
+                    if group_list[m].check(usr["prev"]):
+                        bot.send_message(
+                            cid, props["GroupChoosemes"], reply_markup=group_markup
+                        )
+                        return
+            elif usr["prev"] == "Корзина" or usr["prev"] == "Да":
+                bot.send_message(cid, props["DoneBin"])
+                bot.send_message(cid, form_bin_mes(
+                    usr), reply_markup=groupdone_markup)
+            else:
+                bot.send_message(
+                    cid, props["NotFound"], reply_markup=group_markup)
