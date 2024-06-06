@@ -145,8 +145,7 @@ def category_go(message):
             cid, props["InGroupChoosemes"], reply_markup=group_list[message.text].markup
         )
     elif message.text == "Назад":
-        bot.send_message(cid, props["GroupChoosemes"],
-                         reply_markup=group_markup)
+        bot.send_message(cid, props["GroupChoosemes"], reply_markup=group_markup)
     elif message.text in all_positions:
         with open(props["users_folder"] + "/" + str(message.from_user.id), "r") as f:
             usr = json.load(f)
@@ -159,13 +158,12 @@ def category_go(message):
             ) as f:
                 json.dump(usr, f)
             bot.send_message(cid, props["DoneBin"])
-            bot.send_message(cid, form_bin_mes(
-                usr), reply_markup=groupdone_markup)
+            bot.send_message(cid, form_bin_mes(usr), reply_markup=groupdone_markup)
             return
         try:
             im = open("images/" + all_images[message.text], "rb")
             bot.send_photo(cid, im)
-        except:
+        except Exception:
             bot.send_message(cid, "Фото появится в сокром времени!")
         bot.send_message(cid, all_descr[message.text])
         bot.send_message(cid, "Добавить в корзину?", reply_markup=bin_markup)
@@ -181,8 +179,116 @@ def category_go(message):
                         return
             elif usr["prev"] == "Корзина" or usr["prev"] == "Да":
                 bot.send_message(cid, props["DoneBin"])
-                bot.send_message(cid, form_bin_mes(
-                    usr), reply_markup=groupdone_markup)
+                bot.send_message(cid, form_bin_mes(usr), reply_markup=groupdone_markup)
             else:
-                bot.send_message(
-                    cid, props["NotFound"], reply_markup=group_markup)
+                bot.send_message(cid, props["NotFound"], reply_markup=group_markup)
+    elif message.text == "Да":
+        with open(props["users_folder"] + "/" + str(message.from_user.id), "r") as f:
+            usr = json.load(f)
+        if usr["prev"] in all_positions:
+            if not usr["prev"] in usr["bin"]:
+                usr["bin"][usr["prev"]] = 0
+            usr["bin"][usr["prev"]] += 1
+            usr["price"] += all_prices[usr["prev"]]
+            bot.send_message(cid, form_bin_mes(usr))
+            bot.send_message(cid, props["ToBin"], reply_markup=bin_markup)
+        elif usr["prev"] == "Да":
+            bot.send_message(cid, props["GroupChoosemes"], reply_markup=group_markup)
+        else:
+            bot.send_message(cid, props["NotFound"], reply_markup=group_markup)
+        with open(props["users_folder"] + "/" + str(message.from_user.id), "w") as f:
+            json.dump(usr, f)
+    elif message.text == "Корзина":
+        with open(props["users_folder"] + "/" + str(message.from_user.id), "r") as f:
+            usr = json.load(f)
+            bot.send_message(cid, form_bin_mes(usr))
+            bot.send_message(cid, props["ToBin"], reply_markup=bin_markup)
+    elif message.text == "Продолжить покупки":
+        bot.send_message(cid, props["GroupChoosemes"], reply_markup=group_markup)
+    elif message.text == "Убрать товар":
+        tmp_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        with open(props["users_folder"] + "/" + str(message.from_user.id), "r") as f:
+            usr = json.load(f)
+        tmp_markup.add(types.KeyboardButton("Убрать всё"))
+        for el in usr["bin"]:
+            tmp_markup.add(types.KeyboardButton(el))
+        bot.send_message(cid, "Выберите что убрать", reply_markup=tmp_markup)
+    elif message.text == "Убрать всё":
+        with open(props["users_folder"] + "/" + str(message.from_user.id), "r") as f:
+            usr = json.load(f)
+        usr["price"] = 0
+        del usr["bin"]
+        usr["bin"] = {}
+        with open(props["users_folder"] + "/" + str(message.from_user.id), "w") as f:
+            json.dump(usr, f)
+    elif message.text == "Всё верно":
+        bot.send_message(
+            cid, "С собой или доставка на дом?", reply_markup=deliver_markup
+        )
+    elif message.text == "С собой":
+        with open(props["users_folder"] + "/" + str(message.from_user.id), "r") as f:
+            usr = json.load(f)
+        bot.send_message(
+            cid,
+            "Ваш заказ передан в пекарню, мы напишем Вам, когда она будет готов",
+            reply_markup=types.ReplyKeyboardRemove(),
+        )
+        all_orders[
+            form_order(usr, "C собой", orders_id, message.from_user.username)
+        ] = cid
+        orders_id += 1
+        orders_send()
+        with open(props["users_folder"] + "/" + str(message.from_user.id), "r") as f:
+            usr = json.load(f)
+            del usr["bin"]
+            usr["bin"] = {}
+            usr["price"] = 0
+        with open(props["users_folder"] + "/" + str(message.from_user.id), "w") as f:
+            json.dump(usr, f)
+    elif message.text == "Доставка":
+        bot.send_message(
+            cid, "Введите адрес доставки?", reply_markup=types.ReplyKeyboardRemove()
+        )
+    elif message.text == props["Password"]:
+        bot.send_message(
+            cid, "Вы вошли как владелец", reply_markup=types.ReplyKeyboardRemove()
+        )
+        admin_usres.append(cid)
+        admin_ids.append(message.from_user.id)
+        orders_send()
+    else:
+        with open(props["users_folder"] + "/" + str(message.from_user.id), "r") as f:
+            usr = json.load(f)
+        if usr["prev"] == "Доставка":
+            usr["adress"] = message.text
+            bot.send_message(
+                cid,
+                "Ваш заказ передан в пекарню, мы напишем Вам, когда начнем его доставлять",
+                reply_markup=types.ReplyKeyboardRemove(),
+            )
+            all_orders[
+                form_order(
+                    usr,
+                    "C доставкой по адресу:\n",
+                    orders_id,
+                    message.from_user.username,
+                )
+                + message.text
+            ] = cid
+            orders_id += 1
+            orders_send()
+            del usr["bin"]
+            usr["bin"] = {}
+            usr["price"] = 0
+            with open(
+                props["users_folder"] + "/" + str(message.from_user.id), "w"
+            ) as f:
+                json.dump(usr, f)
+        else:
+            for m in props["wronggroupmes"]:
+                bot.send_message(cid, m)
+    with open(props["users_folder"] + "/" + str(message.from_user.id), "r") as f:
+        usr = json.load(f)
+        usr["prev"] = message.text
+    with open(props["users_folder"] + "/" + str(message.from_user.id), "w") as f:
+        json.dump(usr, f)
