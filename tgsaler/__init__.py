@@ -86,6 +86,22 @@ class group:
         return self.markup
 
 
+@bot.message_handler(commands=["start", "help"])
+def send_welcome(message):
+    cid = message.chat.id
+    with open(str(props["users_folder"]) + "/" + str(message.from_user.id), "w") as f:
+        usr = {}
+        usr["prev"] = "start"
+        usr["bin"] = {}
+        usr["price"] = 0
+        json.dump(usr, f)
+    sti = open("stikers/AnimatedSticker.tgs", "rb")
+    bot.send_sticker(cid, sti)
+    for m in props["Welcome messages"]:
+        bot.send_message(cid, m)
+    bot.send_message(cid, "Выберите категорию меню", reply_markup=group_markup)
+
+
 tmp_menu_categories = list(os.listdir(props["menufolder"]))
 group_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 group_markup.add(types.KeyboardButton("Корзина"))
@@ -131,7 +147,7 @@ def category_go(message):
             if el[: len(message.text)] == message.text:
                 bot.send_message(all_orders[el], "Ваш заказ готов!")
                 bot.send_message(
-                    all_orders[el], props["GroupChoosemes"], reply_markup=group_markup
+                    all_orders[el], "Выберите категорию меню", reply_markup=group_markup
                 )
                 del all_orders[el]
                 orders_send()
@@ -142,10 +158,12 @@ def category_go(message):
     cid = message.chat.id
     if message.text in menu_categories:
         bot.send_message(
-            cid, props["InGroupChoosemes"], reply_markup=group_list[message.text].markup
+            cid,
+            "Выберите продукт из группы",
+            reply_markup=group_list[message.text].markup,
         )
     elif message.text == "Назад":
-        bot.send_message(cid, props["GroupChoosemes"], reply_markup=group_markup)
+        bot.send_message(cid, "Выберите категорию меню", reply_markup=group_markup)
     elif message.text in all_positions:
         with open(props["users_folder"] + "/" + str(message.from_user.id), "r") as f:
             usr = json.load(f)
@@ -157,7 +175,7 @@ def category_go(message):
                 props["users_folder"] + "/" + str(message.from_user.id), "w"
             ) as f:
                 json.dump(usr, f)
-            bot.send_message(cid, props["DoneBin"])
+            bot.send_message(cid, "Проверьте, что в корзине все верно")
             bot.send_message(cid, form_bin_mes(usr), reply_markup=groupdone_markup)
             return
         try:
@@ -174,11 +192,11 @@ def category_go(message):
                 for m in menu_categories:
                     if group_list[m].check(usr["prev"]):
                         bot.send_message(
-                            cid, props["GroupChoosemes"], reply_markup=group_markup
+                            cid, "Выберите категорию меню", reply_markup=group_markup
                         )
                         return
             elif usr["prev"] == "Корзина" or usr["prev"] == "Да":
-                bot.send_message(cid, props["DoneBin"])
+                bot.send_message(cid, "Проверьте, что в корзине все верно")
                 bot.send_message(cid, form_bin_mes(usr), reply_markup=groupdone_markup)
             else:
                 bot.send_message(cid, props["NotFound"], reply_markup=group_markup)
@@ -191,9 +209,9 @@ def category_go(message):
             usr["bin"][usr["prev"]] += 1
             usr["price"] += all_prices[usr["prev"]]
             bot.send_message(cid, form_bin_mes(usr))
-            bot.send_message(cid, props["ToBin"], reply_markup=bin_markup)
+            bot.send_message(cid, "Продолжить покупки?", reply_markup=bin_markup)
         elif usr["prev"] == "Да":
-            bot.send_message(cid, props["GroupChoosemes"], reply_markup=group_markup)
+            bot.send_message(cid, "Выберите категорию меню", reply_markup=group_markup)
         else:
             bot.send_message(cid, props["NotFound"], reply_markup=group_markup)
         with open(props["users_folder"] + "/" + str(message.from_user.id), "w") as f:
@@ -202,9 +220,9 @@ def category_go(message):
         with open(props["users_folder"] + "/" + str(message.from_user.id), "r") as f:
             usr = json.load(f)
             bot.send_message(cid, form_bin_mes(usr))
-            bot.send_message(cid, props["ToBin"], reply_markup=bin_markup)
+            bot.send_message(cid, "Продолжить покупки?", reply_markup=bin_markup)
     elif message.text == "Продолжить покупки":
-        bot.send_message(cid, props["GroupChoosemes"], reply_markup=group_markup)
+        bot.send_message(cid, "Выберите категорию меню", reply_markup=group_markup)
     elif message.text == "Убрать товар":
         tmp_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         with open(props["users_folder"] + "/" + str(message.from_user.id), "r") as f:
@@ -285,7 +303,7 @@ def category_go(message):
             ) as f:
                 json.dump(usr, f)
         else:
-            for m in props["wronggroupmes"]:
+            for m in "Такой категории не существует,\n попробуйте еще раз":
                 bot.send_message(cid, m)
     with open(props["users_folder"] + "/" + str(message.from_user.id), "r") as f:
         usr = json.load(f)
