@@ -37,4 +37,27 @@ class db_controller:
         cursor = conn.cursor()
 
         select_data_query = f"""INSERT INTO products(name, category, price, currency) VALUES ({name}, {category_id}, {price}, {currency})"""
-    
+        # выполнение запроса
+        cursor.execute(select_data_query)
+        # rows = cursor.fetchall()
+        conn.commit()
+        cursor.close()
+        conn.close()
+        # rows = cursor.fetchall()
+        return None
+
+    def add_category(self, name):
+        # Подключение к базе данных
+        conn = sql.connect(self.conn_string)
+        # Создание курсора для выполнения SQL-запросов
+        cursor = conn.cursor()
+
+        select_data_query = f"""INSERT INTO products(name) VALUES ({name})"""
+        # выполнение запроса
+        cursor.execute(select_data_query)
+        # rows = cursor.fetchall()
+        conn.commit()
+        cursor.close()
+        conn.close()
+        # rows = cursor.fetchall()
+        return None
