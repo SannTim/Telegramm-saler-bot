@@ -51,3 +51,66 @@ def form_order(usr, st, id, name):
         ans += el + "\n"
     ans += "На сумму:" + str(usr["price"]) + "\n" + st
     return ans
+
+class group:
+
+    def __init__(self, group_data):
+        global all_positions
+        self.markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        self.markup.add(types.KeyboardButton("Назад"))
+        self.markup.add(types.KeyboardButton("Корзина"))
+        self.positions = []
+        for el in group_data:
+            print(el)
+            new_name = (
+                el[props["Name"]]
+                + ", "
+                + str(el[props["Price"]])
+                + " "
+                + props["currency"]
+            )
+            self.positions.append(new_name)
+            all_descr[new_name] = el[props["Descr"]]
+            all_prices[new_name] = el[props["Price"]]
+            all_images[new_name] = el[props["foto"]]
+
+        for el in self.positions:
+            self.markup.add(types.KeyboardButton(el))
+        all_positions = all_positions + self.positions
+
+    def check(self, x):
+        return x in self.positions
+
+    def markup(self):
+        return self.markup
+
+
+tmp_menu_categories = list(os.listdir(props["menufolder"]))
+group_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+group_markup.add(types.KeyboardButton("Корзина"))
+
+groupdone_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+groupdone_markup.add(types.KeyboardButton("Всё верно"))
+groupdone_markup.add(types.KeyboardButton("Продолжить покупки"))
+groupdone_markup.add(types.KeyboardButton("Убрать товар"))
+
+deliver_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+deliver_markup.add(types.KeyboardButton("С собой"))
+deliver_markup.add(types.KeyboardButton("Доставка"))
+
+bin_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+bin_markup.add(types.KeyboardButton("Да"))
+bin_markup.add(types.KeyboardButton("Нет"))
+
+menu_categories = [
+    t[:-4] for t in tmp_menu_categories if len(t) > 3 and t[-3:] == "csv"
+]
+group_list = {}
+for gr in menu_categories:
+    opend_group = pd.read_csv(props["menufolder"] + "/" + gr + ".csv").to_dict(
+        "records"
+    )
+    group_list[gr] = group(opend_group)
+for cat in menu_categories:
+    group_markup.add(types.KeyboardButton(cat))
+del tmp_menu_categories
