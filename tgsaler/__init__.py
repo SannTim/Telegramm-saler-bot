@@ -3,10 +3,13 @@ from telebot import types
 import json
 import os
 import pandas as pd
-
+import time
+from bd_worker import db_controller
 with open("config.json") as f:
     props = json.load(f)
+
 bot = telebot.TeleBot(props["token"], parse_mode=None)
+bd = db_controller()
 all_positions = []
 all_prices = {}
 all_descr = {}
@@ -16,6 +19,48 @@ admin_ids = []
 all_orders = {}
 orders_id = 1
 
+
+group_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+groupdone_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+deliver_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+bin_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+group_list = {}
+
+def update_markups():
+    global group_markup, groupdone_markup, deliver_markup, bin_markup, group_list
+    tmp_menu_categories = list(os.listdir(props["menufolder"]))
+    group_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    group_markup.add(types.KeyboardButton("Корзина"))
+
+    groupdone_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    groupdone_markup.add(types.KeyboardButton("Всё верно"))
+    groupdone_markup.add(types.KeyboardButton("Продолжить покупки"))
+    groupdone_markup.add(types.KeyboardButton("Убрать товар"))
+
+    deliver_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    deliver_markup.add(types.KeyboardButton("С собой"))
+    deliver_markup.add(types.KeyboardButton("Доставка"))
+
+    bin_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    bin_markup.add(types.KeyboardButton("Да"))
+    bin_markup.add(types.KeyboardButton("Нет"))
+
+    menu_categories = [
+        t[:-4] for t in tmp_menu_categories if len(t) > 3 and t[-3:] == "csv"
+    ]
+    group_list = {}
+    for gr in menu_categories:
+        opend_group = pd.read_csv(props["menufolder"] + "/" + gr + ".csv").to_dict(
+            "records"
+        )
+        group_list[gr] = group(opend_group)
+    for cat in menu_categories:
+        group_markup.add(types.KeyboardButton(cat))
+    del tmp_menu_categories
+
+def updater():
+    update_markups()
+    time.sleep(10)
 
 def orders_send():
     orders_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -86,6 +131,8 @@ class group:
         return self.markup
 
 
+
+
 @bot.message_handler(commands=["start", "help"])
 def send_welcome(message):
     cid = message.chat.id
@@ -101,36 +148,6 @@ def send_welcome(message):
         bot.send_message(cid, m)
     bot.send_message(cid, "Выберите категорию меню", reply_markup=group_markup)
 
-
-tmp_menu_categories = list(os.listdir(props["menufolder"]))
-group_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-group_markup.add(types.KeyboardButton("Корзина"))
-
-groupdone_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-groupdone_markup.add(types.KeyboardButton("Всё верно"))
-groupdone_markup.add(types.KeyboardButton("Продолжить покупки"))
-groupdone_markup.add(types.KeyboardButton("Убрать товар"))
-
-deliver_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-deliver_markup.add(types.KeyboardButton("С собой"))
-deliver_markup.add(types.KeyboardButton("Доставка"))
-
-bin_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-bin_markup.add(types.KeyboardButton("Да"))
-bin_markup.add(types.KeyboardButton("Нет"))
-
-menu_categories = [
-    t[:-4] for t in tmp_menu_categories if len(t) > 3 and t[-3:] == "csv"
-]
-group_list = {}
-for gr in menu_categories:
-    opend_group = pd.read_csv(props["menufolder"] + "/" + gr + ".csv").to_dict(
-        "records"
-    )
-    group_list[gr] = group(opend_group)
-for cat in menu_categories:
-    group_markup.add(types.KeyboardButton(cat))
-del tmp_menu_categories
 
 
 @bot.message_handler(content_types="text")

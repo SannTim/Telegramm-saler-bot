@@ -78,8 +78,7 @@ if conn:
                     name VARCHAR(255) NOT NULL,
                     category INTEGER NOT NULL REFERENCES category(id),
                     price DECIMAL(10, 2) NOT NULL,
-                    currency VARCHAR(3) NOT NULL,
-                    bin INTEGER[] DEFAULT '{}'
+                    currency VARCHAR(3) NOT NULL
                 )
             """
             )
@@ -94,7 +93,9 @@ if conn:
                 CREATE TABLE users (
                     id SERIAL PRIMARY KEY,
                     tgid BIGINT NOT NULL,
-                    prev TEXT
+                    prev TEXT,
+                    bin INTEGER[] DEFAULT '{}',
+                    price DECIMAL(10, 2)
                 )
             """
             )

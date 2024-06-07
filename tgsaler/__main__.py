@@ -1,5 +1,5 @@
-import bd_worker
+from __init__ import updater, bot
+import threading
 
-contrl = bd_worker.db_controller()
-
-contrl.add_product("Margarita", "Pizza", 69, 'руб')
+parallel_thread = threading.Thread(target=updater)
+parallel_thread.start()

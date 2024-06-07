@@ -31,6 +31,28 @@ class db_controller:
             f"dbname={dbname} user={user} password={password} host={host} port={port}"
         )
 
+
+
+    def get_user_by_id(self, user_id):
+    # Укажите ваши данные для подключения к базе данных
+        connection = sql.connect(self.conn_string)
+        cursor = connection.cursor(cursor_factory=sql.RealDictCursor)
+
+        try:
+            # Выполняем SQL запрос для получения данных
+            cursor.execute("SELECT * FROM users WHERE tgid = %s", (user_id,))
+            user = cursor.fetchone()
+
+            # Возвращаем результат в виде словаря
+            return dict(user) if user else None
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
+
+        finally:
+            cursor.close()
+            connection.close()
     def get_all_by_category(self, category_id):
         # Подключение к базе данных
         conn = sql.connect(self.conn_string)
@@ -78,3 +100,36 @@ class db_controller:
         conn.close()
         # rows = cursor.fetchall()
         return None
+
+    def add_user(self, tgid):
+        # Подключение к базе данных
+        conn = sql.connect(self.conn_string)
+        # Создание курсора для выполнения SQL-запросов
+        cursor = conn.cursor()
+
+        try:
+            # Проверка существования пользователя с заданным tgid
+            check_user_query = "SELECT 1 FROM category WHERE tgid = %s"
+            cursor.execute(check_user_query, (tgid,))
+            user_exists = cursor.fetchone() is not None
+
+            if not user_exists:
+                # Если пользователя нет, выполняем вставку
+                insert_user_query = "INSERT INTO category(tgid) VALUES (%s)"
+                cursor.execute(insert_user_query, (tgid,))
+                conn.commit()
+                print(f"User with tgid {tgid} added successfully.")
+            else:
+                print(f"User with tgid {tgid} already exists.")
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            conn.rollback()
+
+        finally:
+            cursor.close()
+            conn.close()
+
+        return None
+    
+    
