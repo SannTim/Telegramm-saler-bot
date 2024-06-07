@@ -4,10 +4,16 @@ from psycopg2 import sql, OperationalError
 import sys
 # Подключение к PostgreSQL
 
-if len(sys.argv) == 3:
+if len(sys.argv) > 1:
     user = sys.argv[1]
-    password = sys.argv[2]
-    host = sys.argv[3]
+    password = ''
+    host = 'localhost'
+
+    if len(sys.argv) > 2:
+        password = sys.argv[2]
+    if len(sys.argv) > 3:
+        host = sys.argv[3]
+        
 else:
     user = input('Enter username\n>')
     password = input('Enter password\n>')
@@ -26,50 +32,71 @@ def create_connection(db_name, db_user, db_password, db_host):
 
 # Подключение к PostgreSQL
 conn = create_connection("postgres", user, password, host)
-conn.autocommit = True
-cur = conn.cursor()
 
-# Создание базы данных
-cur.execute("DROP DATABASE IF EXISTS tgsaler")
-cur.execute("CREATE DATABASE tgsaler")
+if conn:
+    conn.autocommit = True
+    cur = conn.cursor()
 
-# Подключение к базе данных tgsaler
-conn.close()
-conn = psycopg2.connect(dbname="tgsaler", user="your_username", password="your_password", host="localhost")
-cur = conn.cursor()
+    # Создание базы данных
+    try:
+        cur.execute("DROP DATABASE IF EXISTS tgsaler")
+        cur.execute("CREATE DATABASE tgsaler")
+        print("База данных 'tgsaler' успешно создана.")
+    except Exception as e:
+        print(f"Ошибка при создании базы данных 'tgsaler': {e}")
 
-# Создание таблицы категорий
-cur.execute("""
-    CREATE TABLE category (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(255) NOT NULL
-    )
-""")
+    # Подключение к базе данных tgsaler
+    conn.close()
+    conn = create_connection("tgsaler", user, password, host)
 
-# Создание таблицы продуктов
-cur.execute("""
-    CREATE TABLE product (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        category INTEGER NOT NULL REFERENCES category(id),
-        price DECIMAL(10, 2) NOT NULL,
-        currency VARCHAR(3) NOT NULL
-    )
-""")
+    if conn:
+        cur = conn.cursor()
 
-# Создание таблицы пользователей
-cur.execute("""
-    CREATE TABLE users (
-        id SERIAL PRIMARY KEY,
-        tgid BIGINT NOT NULL,
-        prev TEXT
-    )
-""")
+        # Создание таблицы категорий
+        try:
+            cur.execute("""
+                CREATE TABLE category (
+                    id SERIAL PRIMARY KEY,
+                    name VARCHAR(255) NOT NULL
+                )
+            """)
+            print("Таблица 'category' успешно создана.")
+        except Exception as e:
+            print(f"Ошибка при создании таблицы 'category': {e}")
 
-# Закрытие соединения
-conn.commit()
-cur.close()
-conn.close()
+        # Создание таблицы продуктов
+        try:
+            cur.execute("""
+                CREATE TABLE product (
+                    id SERIAL PRIMARY KEY,
+                    name VARCHAR(255) NOT NULL,
+                    category INTEGER NOT NULL REFERENCES category(id),
+                    price DECIMAL(10, 2) NOT NULL,
+                    currency VARCHAR(3) NOT NULL
+                )
+            """)
+            print("Таблица 'product' успешно создана.")
+        except Exception as e:
+            print(f"Ошибка при создании таблицы 'product': {e}")
 
-print("База данных и таблицы успешно созданы.")
+        # Создание таблицы пользователей
+        try:
+            cur.execute("""
+                CREATE TABLE users (
+                    id SERIAL PRIMARY KEY,
+                    tgid BIGINT NOT NULL,
+                    prev TEXT
+                )
+            """)
+            print("Таблица 'users' успешно создана.")
+        except Exception as e:
+            print(f"Ошибка при создании таблицы 'users': {e}")
+
+        # Закрытие соединения
+        conn.commit()
+        cur.close()
+        conn.close()
+        print("Соединение закрыто.")
+else:
+    print("Не удалось подключиться к базе данных 'postgres'.")
 
