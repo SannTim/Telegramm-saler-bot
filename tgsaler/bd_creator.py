@@ -78,7 +78,8 @@ if conn:
                     name VARCHAR(255) NOT NULL,
                     category INTEGER NOT NULL REFERENCES category(id),
                     price DECIMAL(10, 2) NOT NULL,
-                    currency VARCHAR(3) NOT NULL
+                    currency VARCHAR(3) NOT NULL,
+                    bin INTEGER[] DEFAULT '{}'
                 )
             """
             )
