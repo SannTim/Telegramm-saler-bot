@@ -28,7 +28,8 @@ group_list = {}
 
 def update_markups():
     global group_markup, groupdone_markup, deliver_markup, bin_markup, group_list
-    tmp_menu_categories = list(os.listdir(props["menufolder"]))
+    tmp_menu_categories = [i[0] for i  in bd.get_categories()]
+    print(tmp_menu_categories)
     group_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     group_markup.add(types.KeyboardButton("Корзина"))
 

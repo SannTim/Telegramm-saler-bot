@@ -67,6 +67,21 @@ class db_controller:
         cursor.close()
         conn.close()
         return rows
+    
+    def get_categories(self):
+        # Подключение к базе данных
+        conn = sql.connect(self.conn_string)
+        # Создание курсора для выполнения SQL-запросов
+        cursor = conn.cursor()
+
+        select_data_query = f"SELECT name FROM category"
+        cursor.execute(select_data_query)
+        rows = cursor.fetchall()
+
+        # Закрытие соединения
+        cursor.close()
+        conn.close()
+        return rows
 
     def add_product(self, name, category, price, currency):
         # Подключение к базе данных
