@@ -59,14 +59,21 @@ class db_controller:
         # Создание курсора для выполнения SQL-запросов
         cursor = conn.cursor()
 
-        select_data_query = f"SELECT * FROM products WHERE category = '{category_id}'"
-        cursor.execute(select_data_query)
+        # Определение столбцов таблицы products
+        column_names = ["id", "name", "category", "price"]
+
+        select_data_query = f"SELECT * FROM product WHERE category = {category_id}"
+        cursor.execute(select_data_query, (category_id,))
         rows = cursor.fetchall()
+
+        # Преобразование строк в массив словарей
+        result = [dict(zip(column_names, row)) for row in rows]
 
         # Закрытие соединения
         cursor.close()
         conn.close()
-        return rows
+
+        return result
     
     def get_categories(self):
         # Подключение к базе данных
@@ -74,7 +81,7 @@ class db_controller:
         # Создание курсора для выполнения SQL-запросов
         cursor = conn.cursor()
 
-        select_data_query = f"SELECT name FROM category"
+        select_data_query = f"SELECT id, name FROM category"
         cursor.execute(select_data_query)
         rows = cursor.fetchall()
 

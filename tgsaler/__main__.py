@@ -1,4 +1,4 @@
-from __init__ import updater, bot
+from tgsaler import updater, bot
 import threading
 
 parallel_thread = threading.Thread(target=updater)

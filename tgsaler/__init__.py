@@ -4,8 +4,9 @@ import json
 import os
 import pandas as pd
 import time
-from bd_worker import db_controller
-with open("config.json") as f:
+from tgsaler import bd_worker
+db_controller = bd_worker.db_controller
+with open("tgsaler/config.json") as f:
     props = json.load(f)
 
 bot = telebot.TeleBot(props["token"], parse_mode=None)
@@ -28,7 +29,7 @@ group_list = {}
 
 def update_markups():
     global group_markup, groupdone_markup, deliver_markup, bin_markup, group_list
-    tmp_menu_categories = [i[0] for i  in bd.get_categories()]
+    tmp_menu_categories = [(i[0],i[1]) for i  in bd.get_categories()]
     print(tmp_menu_categories)
     group_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     group_markup.add(types.KeyboardButton("Корзина"))
@@ -45,18 +46,12 @@ def update_markups():
     bin_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     bin_markup.add(types.KeyboardButton("Да"))
     bin_markup.add(types.KeyboardButton("Нет"))
-
-    menu_categories = [
-        t[:-4] for t in tmp_menu_categories if len(t) > 3 and t[-3:] == "csv"
-    ]
     group_list = {}
-    for gr in menu_categories:
-        opend_group = pd.read_csv(props["menufolder"] + "/" + gr + ".csv").to_dict(
-            "records"
-        )
-        group_list[gr] = group(opend_group)
-    for cat in menu_categories:
-        group_markup.add(types.KeyboardButton(cat))
+    for gr in tmp_menu_categories:
+        opend_group = bd.get_all_by_category(gr[0])
+        print(opend_group)
+        group_list[gr[1]] = group(opend_group)
+        group_markup.add(types.KeyboardButton(gr[1]))
     del tmp_menu_categories
 
 def updater():
@@ -110,16 +105,16 @@ class group:
         for el in group_data:
             print(el)
             new_name = (
-                el[props["Name"]]
+                el["name"]
                 + ", "
-                + str(el[props["Price"]])
+                + str(el["price"])
                 + " "
-                + props["currency"]
+                + el["currency"]
             )
             self.positions.append(new_name)
-            all_descr[new_name] = el[props["Descr"]]
-            all_prices[new_name] = el[props["Price"]]
-            all_images[new_name] = el[props["foto"]]
+            all_descr[new_name] = el["descr"]
+            all_prices[new_name] = el["price"]
+            all_images[new_name] = el["photo"]
 
         for el in self.positions:
             self.markup.add(types.KeyboardButton(el))
