@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html lang="ru" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>tgsaler Module &#8212; документация Telegramm-saler-bot </title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=372fde1a"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=29b1f277"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="prev" title="Welcome to Telegramm-saler-bot’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-tgsaler">
+<span id="tgsaler-module"></span><h1>tgsaler Module<a class="headerlink" href="#module-tgsaler" title="Link to this heading">¶</a></h1>
+<p>Модуль реализующий сервер для игры MOOD.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="tgsaler.category_go">
+<span class="sig-prename descclassname"><span class="pre">tgsaler.</span></span><span class="sig-name descname"><span class="pre">category_go</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tgsaler.category_go" title="Link to this definition">¶</a></dt>
+<dd><p>Обрабатывает сообщения пользователя и реагирует на них.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>message (telebot.types.Message): Сообщение от пользователя.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tgsaler.form_bin_mes">
+<span class="sig-prename descclassname"><span class="pre">tgsaler.</span></span><span class="sig-name descname"><span class="pre">form_bin_mes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">usr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tgsaler.form_bin_mes" title="Link to this definition">¶</a></dt>
+<dd><p>Формирует текст для корзины пользователя.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>usr (dict): Информация о пользователе и его корзине.</p>
+</dd>
+<dt>Returns:</dt><dd><p>str: Текст с информацией о корзине пользователя.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tgsaler.form_order">
+<span class="sig-prename descclassname"><span class="pre">tgsaler.</span></span><span class="sig-name descname"><span class="pre">form_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">usr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">st</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tgsaler.form_order" title="Link to this definition">¶</a></dt>
+<dd><p>Формирует текст заказа для пользователя.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>usr (dict): Информация о пользователе и его корзине.
+st (str): Статус заказа.
+id (int): Уникальный идентификатор заказа.
+name (str): Имя пользователя.</p>
+</dd>
+<dt>Returns:</dt><dd><p>str: Текст заказа для пользователя.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tgsaler.group">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tgsaler.</span></span><span class="sig-name descname"><span class="pre">group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tgsaler.group" title="Link to this definition">¶</a></dt>
+<dd><p>Класс, представляющий группу товаров.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>markup (telebot.types.ReplyKeyboardMarkup): Маркап клавиатуры.
+positions (list): Список позиций товаров в группе.</p>
+</dd>
+<dt>Methods:</dt><dd><p>check(x): Проверяет наличие товара в группе.
+markup(): Возвращает маркап клавиатуры для группы.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tgsaler.group.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tgsaler.group.check" title="Link to this definition">¶</a></dt>
+<dd><p>Проверяет наличие товара в группе.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>x (str): Наименование товара.</p>
+</dd>
+<dt>Returns:</dt><dd><p>bool: Результат проверки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tgsaler.group.markup">
+<span class="sig-name descname"><span class="pre">markup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tgsaler.group.markup" title="Link to this definition">¶</a></dt>
+<dd><p>Возвращает маркап клавиатуры для группы.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>telebot.types.ReplyKeyboardMarkup: Маркап клавиатуры.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tgsaler.orders_send">
+<span class="sig-prename descclassname"><span class="pre">tgsaler.</span></span><span class="sig-name descname"><span class="pre">orders_send</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tgsaler.orders_send" title="Link to this definition">¶</a></dt>
+<dd><p>Функция отправления сообщения с заказами администраторам.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tgsaler.send_welcome">
+<span class="sig-prename descclassname"><span class="pre">tgsaler.</span></span><span class="sig-name descname"><span class="pre">send_welcome</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tgsaler.send_welcome" title="Link to this definition">¶</a></dt>
+<dd><p>Отправляет приветственные сообщения при командах /start и /help.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>message (telebot.types.Message): Сообщение от пользователя.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tgsaler.update_markups">
+<span class="sig-prename descclassname"><span class="pre">tgsaler.</span></span><span class="sig-name descname"><span class="pre">update_markups</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tgsaler.update_markups" title="Link to this definition">¶</a></dt>
+<dd><p>Функция обновления обновления клавиатурной разметки.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tgsaler.updater">
+<span class="sig-prename descclassname"><span class="pre">tgsaler.</span></span><span class="sig-name descname"><span class="pre">updater</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tgsaler.updater" title="Link to this definition">¶</a></dt>
+<dd><p>Функция, вызывающая функцию update_markups() каждые 10 секунд.</p>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Telegramm-saler-bot</a></h1>
+
+
+
+
+
+
+
+
+<h3>Навигация</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">tgsaler Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#tgsaler.category_go"><code class="docutils literal notranslate"><span class="pre">category_go()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tgsaler.form_bin_mes"><code class="docutils literal notranslate"><span class="pre">form_bin_mes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tgsaler.form_order"><code class="docutils literal notranslate"><span class="pre">form_order()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tgsaler.group"><code class="docutils literal notranslate"><span class="pre">group</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tgsaler.orders_send"><code class="docutils literal notranslate"><span class="pre">orders_send()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tgsaler.send_welcome"><code class="docutils literal notranslate"><span class="pre">send_welcome()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tgsaler.update_markups"><code class="docutils literal notranslate"><span class="pre">update_markups()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tgsaler.updater"><code class="docutils literal notranslate"><span class="pre">updater()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="предыдущая глава">Welcome to Telegramm-saler-bot’s documentation!</a></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Быстрый поиск</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Искать" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Mark, Timosha, Maria.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/tgsaler.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

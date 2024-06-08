@@ -1,3 +1,7 @@
+"""
+Модуль реализующий сервер для игры MOOD.
+"""
+import pathlib
 import telebot
 from telebot import types
 import json
@@ -6,7 +10,7 @@ import pandas as pd
 import time
 from tgsaler import bd_worker
 db_controller = bd_worker.db_controller
-with open("tgsaler/config.json") as f:
+with open(pathlib.Path(__file__).parents[0].resolve().as_posix()+"/config.json") as f:
     props = json.load(f)
 
 bot = telebot.TeleBot(props["token"], parse_mode=None)
@@ -27,9 +31,14 @@ deliver_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 bin_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 group_list = {}
 
+
 def update_markups():
+    """
+    Функция обновления обновления клавиатурной разметки.
+    """
+
     global group_markup, groupdone_markup, deliver_markup, bin_markup, group_list
-    tmp_menu_categories = [(i[0],i[1]) for i  in bd.get_categories()]
+    tmp_menu_categories = [(i[0], i[1]) for i in bd.get_categories()]
     print(tmp_menu_categories)
     group_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     group_markup.add(types.KeyboardButton("Корзина"))
@@ -54,12 +63,22 @@ def update_markups():
         group_markup.add(types.KeyboardButton(gr[1]))
     del tmp_menu_categories
 
+
 def updater():
+    """
+    Функция, вызывающая функцию update_markups() каждые 10 секунд.
+    """
+
     while True:
         update_markups()
         time.sleep(10)
 
+
 def orders_send():
+    """
+    Функция отправления сообщения с заказами администраторам.
+    """
+
     orders_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     msg = "\n".join(all_orders)
     if len(all_orders) == 0:
@@ -72,6 +91,16 @@ def orders_send():
 
 
 def form_bin_mes(usr):
+    """
+    Формирует текст для корзины пользователя.
+
+    Args:
+        usr (dict): Информация о пользователе и его корзине.
+
+    Returns:
+        str: Текст с информацией о корзине пользователя.
+    """
+
     ans = "В вашей корзине сейчас:\n"
     for el in usr["bin"]:
         if usr["bin"][el] != 1:
@@ -82,6 +111,19 @@ def form_bin_mes(usr):
 
 
 def form_order(usr, st, id, name):
+    """
+    Формирует текст заказа для пользователя.
+
+    Args:
+        usr (dict): Информация о пользователе и его корзине.
+        st (str): Статус заказа.
+        id (int): Уникальный идентификатор заказа.
+        name (str): Имя пользователя.
+
+    Returns:
+        str: Текст заказа для пользователя.
+    """
+
     # print(id)
     ans = str(id) + " заказ:\n"
     ans += "От пользователя: @" + name + "\n"
@@ -94,8 +136,26 @@ def form_order(usr, st, id, name):
 
 
 class group:
+    """
+    Класс, представляющий группу товаров.
+
+    Attributes:
+        markup (telebot.types.ReplyKeyboardMarkup): Маркап клавиатуры.
+        positions (list): Список позиций товаров в группе.
+
+    Methods:
+        check(x): Проверяет наличие товара в группе.
+        markup(): Возвращает маркап клавиатуры для группы.
+    """
 
     def __init__(self, group_data):
+        """
+        Инициализирует группу товаров.
+
+        Args:
+            group_data (list): Список данных о товарах в группе.
+        """
+
         global all_positions
         self.markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         self.markup.add(types.KeyboardButton("Назад"))
@@ -120,16 +180,38 @@ class group:
         all_positions = all_positions + self.positions
 
     def check(self, x):
+        """
+        Проверяет наличие товара в группе.
+
+        Args:
+            x (str): Наименование товара.
+
+        Returns:
+            bool: Результат проверки.
+        """
+
         return x in self.positions
 
     def markup(self):
+        """
+        Возвращает маркап клавиатуры для группы.
+
+        Returns:
+            telebot.types.ReplyKeyboardMarkup: Маркап клавиатуры.
+        """
+
         return self.markup
-
-
 
 
 @bot.message_handler(commands=["start", "help"])
 def send_welcome(message):
+    """
+    Отправляет приветственные сообщения при командах /start и /help.
+
+    Args:
+        message (telebot.types.Message): Сообщение от пользователя.
+    """
+
     cid = message.chat.id
     with open(str(props["users_folder"]) + "/" + str(message.from_user.id), "w") as f:
         usr = {}
@@ -144,9 +226,15 @@ def send_welcome(message):
     bot.send_message(cid, "Выберите категорию меню", reply_markup=group_markup)
 
 
-
 @bot.message_handler(content_types="text")
 def category_go(message):
+    """
+    Обрабатывает сообщения пользователя и реагирует на них.
+
+    Args:
+        message (telebot.types.Message): Сообщение от пользователя.
+    """
+
     global orders_id
     # print(message.from_user)
     if message.from_user.id in admin_ids:
@@ -175,7 +263,8 @@ def category_go(message):
             reply_markup=group_list[message.text].markup,
         )
     elif message.text == "Назад":
-        bot.send_message(cid, "Выберите категорию меню", reply_markup=group_markup)
+        bot.send_message(cid, "Выберите категорию меню",
+                         reply_markup=group_markup)
     elif message.text in all_positions:
         with open(props["users_folder"] + "/" + str(message.from_user.id), "r") as f:
             usr = json.load(f)
@@ -188,7 +277,8 @@ def category_go(message):
             ) as f:
                 json.dump(usr, f)
             bot.send_message(cid, "Проверьте, что в корзине все верно")
-            bot.send_message(cid, form_bin_mes(usr), reply_markup=groupdone_markup)
+            bot.send_message(cid, form_bin_mes(
+                usr), reply_markup=groupdone_markup)
             return
         try:
             im = open("images/" + all_images[message.text], "rb")
@@ -209,9 +299,11 @@ def category_go(message):
                         return
             elif usr["prev"] == "Корзина" or usr["prev"] == "Да":
                 bot.send_message(cid, "Проверьте, что в корзине все верно")
-                bot.send_message(cid, form_bin_mes(usr), reply_markup=groupdone_markup)
+                bot.send_message(cid, form_bin_mes(
+                    usr), reply_markup=groupdone_markup)
             else:
-                bot.send_message(cid, props["NotFound"], reply_markup=group_markup)
+                bot.send_message(
+                    cid, props["NotFound"], reply_markup=group_markup)
     elif message.text == "Да":
         with open(props["users_folder"] + "/" + str(message.from_user.id), "r") as f:
             usr = json.load(f)
@@ -221,9 +313,11 @@ def category_go(message):
             usr["bin"][usr["prev"]] += 1
             usr["price"] += all_prices[usr["prev"]]
             bot.send_message(cid, form_bin_mes(usr))
-            bot.send_message(cid, "Продолжить покупки?", reply_markup=bin_markup)
+            bot.send_message(cid, "Продолжить покупки?",
+                             reply_markup=bin_markup)
         elif usr["prev"] == "Да":
-            bot.send_message(cid, "Выберите категорию меню", reply_markup=group_markup)
+            bot.send_message(cid, "Выберите категорию меню",
+                             reply_markup=group_markup)
         else:
             bot.send_message(cid, props["NotFound"], reply_markup=group_markup)
         with open(props["users_folder"] + "/" + str(message.from_user.id), "w") as f:
@@ -232,9 +326,11 @@ def category_go(message):
         with open(props["users_folder"] + "/" + str(message.from_user.id), "r") as f:
             usr = json.load(f)
             bot.send_message(cid, form_bin_mes(usr))
-            bot.send_message(cid, "Продолжить покупки?", reply_markup=bin_markup)
+            bot.send_message(cid, "Продолжить покупки?",
+                             reply_markup=bin_markup)
     elif message.text == "Продолжить покупки":
-        bot.send_message(cid, "Выберите категорию меню", reply_markup=group_markup)
+        bot.send_message(cid, "Выберите категорию меню",
+                         reply_markup=group_markup)
     elif message.text == "Убрать товар":
         tmp_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         with open(props["users_folder"] + "/" + str(message.from_user.id), "r") as f:
