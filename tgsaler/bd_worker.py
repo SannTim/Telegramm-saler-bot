@@ -60,7 +60,7 @@ class db_controller:
         cursor = conn.cursor()
 
         # Определение столбцов таблицы products
-        column_names = ["id", "name", "category", "price"]
+        column_names = ["id", "name", "category", "price","currency","descr","photo"]
 
         select_data_query = f"SELECT * FROM product WHERE category = {category_id}"
         cursor.execute(select_data_query, (category_id,))

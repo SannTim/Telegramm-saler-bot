@@ -55,8 +55,9 @@ def update_markups():
     del tmp_menu_categories
 
 def updater():
-    update_markups()
-    time.sleep(10)
+    while True:
+        update_markups()
+        time.sleep(10)
 
 def orders_send():
     orders_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -64,8 +65,6 @@ def orders_send():
     if len(all_orders) == 0:
         return
     for el in all_orders:
-        # print(el)
-        # print(el[0])
         orders_markup.add(types.KeyboardButton(str(el[0])))
     for admin in admin_usres:
         bot.send_message(admin, msg)
