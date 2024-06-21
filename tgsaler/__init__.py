@@ -29,10 +29,12 @@ bin_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 group_list = {}
 menu_catigories = []
 def update_markups():
+    
     global group_markup, groupdone_markup, deliver_markup, bin_markup, group_list, menu_catigories
     tmp_menu_categories = [(i[0],i[1]) for i  in bd.get_categories()]
-    menu_catigories = tmp_menu_categories
-    print(tmp_menu_categories)
+    menu_catigories = [i[1] for i in tmp_menu_categories]
+    
+    # print(tmp_menu_categories)
     group_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     group_markup.add(types.KeyboardButton("Корзина"))
 
@@ -51,7 +53,6 @@ def update_markups():
     group_list = {}
     for gr in tmp_menu_categories:
         opend_group = bd.get_all_by_category(gr[0])
-        print(opend_group)
         group_list[gr[1]] = group(opend_group)
         group_markup.add(types.KeyboardButton(gr[1]))
     del tmp_menu_categories
@@ -96,10 +97,10 @@ def form_order(usr, st, id, name):
 
 
 def get_usr_byid(id):
-    return db_controller.get_user_by_id(id)
+    return bd.get_user_by_id(id)
 
 def save_user_data(data):
-    db_controller.edit_user_by_data(data)
+    bd.edit_user_by_data(data)
 
 class group:
 
@@ -110,7 +111,7 @@ class group:
         self.markup.add(types.KeyboardButton("Корзина"))
         self.positions = []
         for el in group_data:
-            print(el)
+            # print(el)
             new_name = (
                 el["name"]
                 + ", "
@@ -138,9 +139,10 @@ class group:
 
 @bot.message_handler(commands=["start", "help"])
 def send_welcome(message):
+    global bd
     cid = message.chat.id
-    db_controller.add_user(message.from_user.id)
-    sti = open("stikers/AnimatedSticker.tgs", "rb")
+    bd.add_user(tgid=f'{message.from_user.id}')
+    sti = open(os.path.dirname(os.path.abspath(__file__)) + "/stikers/AnimatedSticker.tgs", "rb")
     bot.send_sticker(cid, sti)
     for m in props["Welcome messages"]:
         bot.send_message(cid, m)
@@ -150,11 +152,8 @@ def send_welcome(message):
 
 @bot.message_handler(content_types="text")
 def category_go(message):
-    global orders_id,menu_catigories
-    # print(message.from_user)
+    global orders_id,menu_catigories,bd
     if message.from_user.id in admin_ids:
-
-        # print("tut")
 
         for el in all_orders:
             print(el[: len(message.text)])
@@ -189,10 +188,10 @@ def category_go(message):
             bot.send_message(cid, "Проверьте, что в корзине все верно")
             bot.send_message(cid, form_bin_mes(usr), reply_markup=groupdone_markup)
             return
-        prod = db_controller.get_product_data(message.text)
-        ##!
+        prod = bd.get_product_data(','.join(message.text.split(',')[:-1]))
+        print(prod)
         try:
-            im = open("images/" + all_images[message.text], "rb")
+            im = open("images/" + prod['photo'], "rb")
             bot.send_photo(cid, im)
         except Exception:
             bot.send_message(cid, "Фото появится в сокром времени!")

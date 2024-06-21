@@ -3,5 +3,5 @@ import threading
 
 parallel_thread = threading.Thread(target=updater)
 parallel_thread.start()
+bot.infinity_polling()
 parallel_thread.join()
-

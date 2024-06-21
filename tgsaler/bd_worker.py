@@ -19,13 +19,8 @@ def create_connection(
 
 
 class db_controller:
-    def __init__(self) -> None:
+    def __init__(self, host="localhost", port=5432, dbname = "tgsaler",user = "tgsaler",password = "tgsalerbot") -> None:
         # Параметры подключения к базе данных
-        dbname = "tgsaler"
-        user = "tgsaler"
-        password = "tgsalerbot"
-        host = "localhost"
-        port = 5432
         self.conn_string = (
             f"dbname={dbname} user={user} password={password} host={host} port={port}"
         )
@@ -59,16 +54,34 @@ class db_controller:
         conn = sql.connect(self.conn_string)
         # Создание курсора для выполнения SQL-запросов
         cursor = conn.cursor()
-
+        # print('aboba')
         # Определение столбцов таблицы products
         column_names = ["id", "name", "category", "price","currency","descr","photo"]
 
-        select_data_query = f"SELECT * FROM product WHERE category = {category_id};"
+        select_data_query = f"SELECT * FROM product WHERE category = '{category_id}';"
         cursor.execute(select_data_query, (category_id,))
         rows = cursor.fetchall()
 
         # Преобразование строк в массив словарей
         result = [dict(zip(column_names, row)) for row in rows]
+
+        # Закрытие соединения
+        cursor.close()
+        conn.close()
+
+        return result
+    
+    def get_product_data(self, name):
+        # Подключение к базе данных
+        conn = sql.connect(self.conn_string)
+        # Создание курсора для выполнения SQL-запросов
+        cursor = conn.cursor()
+        column_names = ["id", "name", "category", "price","currency","descr","photo"]
+        select_data_query = f"SELECT * FROM product WHERE name = '{name}';"
+        cursor.execute(select_data_query, (name,))
+        row = cursor.fetchone()
+        # Преобразование строк в массив словарей
+        result = dict(zip(column_names, row))
 
         # Закрытие соединения
         cursor.close()
@@ -91,7 +104,7 @@ class db_controller:
         conn.close()
         return rows
 
-    def add_product(self, name, category, price, currency):
+    def add_product(self, name, category, price, currency, descr='', photo=''):
         # Подключение к базе данных
         conn = sql.connect(self.conn_string)
         # Создание курсора для выполнения SQL-запросов
@@ -100,7 +113,8 @@ class db_controller:
         # выполнение запроса
         cursor.execute(select_data_query)
         rows = cursor.fetchall()
-        select_data_query = f"""INSERT INTO product(name, category, price, currency) VALUES ('{name}', '{rows[0][0]}', '{price}', '{currency}');"""
+        # print(rows)
+        select_data_query = f"""INSERT INTO product(name, category, price, currency, descr, photo) VALUES ('{name}', '{rows[0][0]}', '{price}', '{currency}','{descr}', '{photo}');"""
         # выполнение запроса
         cursor.execute(select_data_query)
         conn.commit()

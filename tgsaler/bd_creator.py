@@ -61,7 +61,8 @@ if conn:
                 """
                 CREATE TABLE category (
                     id SERIAL PRIMARY KEY,
-                    name VARCHAR(255) NOT NULL
+                    name VARCHAR(255) NOT NULL,
+                    UNIQUE(name)
                 )
             """
             )
@@ -80,7 +81,8 @@ if conn:
                     price DECIMAL(10, 2) NOT NULL,
                     currency VARCHAR(3) NOT NULL,
                     descr TEXT,
-                    photo TEXT
+                    photo TEXT,
+                    UNIQUE(name)
                 )
             """
             )
@@ -97,7 +99,8 @@ if conn:
                     tgid BIGINT NOT NULL,
                     prev TEXT,
                     bin VARCHAR(255)[] DEFAULT '{}',
-                    price DECIMAL(10, 2)
+                    price DECIMAL(10, 2),
+                    UNIQUE(tgid)
                 )
             """
             )
