@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 telebot = "*"
 pandas = "*"
+pytelegrambotapi = "*"
+psycopg2 = "*"
 
 [dev-packages]
 

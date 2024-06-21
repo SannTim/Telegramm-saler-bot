@@ -1,6 +1,5 @@
 import psycopg2 as sql
 
-
 def create_connection(
     db_name, db_user, db_password, db_host="localhost", db_port="5432"
 ):
@@ -36,15 +35,16 @@ class db_controller:
     def get_user_by_id(self, user_id):
     # Укажите ваши данные для подключения к базе данных
         connection = sql.connect(self.conn_string)
-        cursor = connection.cursor(cursor_factory=sql.RealDictCursor)
+        cursor = connection.cursor()
 
         try:
             # Выполняем SQL запрос для получения данных
-            cursor.execute("SELECT * FROM users WHERE tgid = %s", (user_id,))
+            column_names = ["id", "tgid", "prev", "bin", "price"]
+            cursor.execute("SELECT * FROM users WHERE tgid = %s;", (user_id,))
             user = cursor.fetchone()
-
+            # print(dict(zip(column_names, user)))
             # Возвращаем результат в виде словаря
-            return dict(user) if user else None
+            return dict(zip(column_names, user)) if user else None
 
         except Exception as e:
             print(f"An error occurred: {e}")
@@ -53,6 +53,7 @@ class db_controller:
         finally:
             cursor.close()
             connection.close()
+
     def get_all_by_category(self, category_id):
         # Подключение к базе данных
         conn = sql.connect(self.conn_string)
@@ -62,7 +63,7 @@ class db_controller:
         # Определение столбцов таблицы products
         column_names = ["id", "name", "category", "price","currency","descr","photo"]
 
-        select_data_query = f"SELECT * FROM product WHERE category = {category_id}"
+        select_data_query = f"SELECT * FROM product WHERE category = {category_id};"
         cursor.execute(select_data_query, (category_id,))
         rows = cursor.fetchall()
 
@@ -81,7 +82,7 @@ class db_controller:
         # Создание курсора для выполнения SQL-запросов
         cursor = conn.cursor()
 
-        select_data_query = f"SELECT id, name FROM category"
+        select_data_query = f"SELECT id, name FROM category;"
         cursor.execute(select_data_query)
         rows = cursor.fetchall()
 
@@ -95,11 +96,11 @@ class db_controller:
         conn = sql.connect(self.conn_string)
         # Создание курсора для выполнения SQL-запросов
         cursor = conn.cursor()
-        select_data_query = f"""SELECT * from category WHERE name = '{category}'"""
+        select_data_query = f"""SELECT * from category WHERE name = '{category}';"""
         # выполнение запроса
         cursor.execute(select_data_query)
         rows = cursor.fetchall()
-        select_data_query = f"""INSERT INTO product(name, category, price, currency) VALUES ('{name}', '{rows[0][0]}', '{price}', '{currency}')"""
+        select_data_query = f"""INSERT INTO product(name, category, price, currency) VALUES ('{name}', '{rows[0][0]}', '{price}', '{currency}');"""
         # выполнение запроса
         cursor.execute(select_data_query)
         conn.commit()
@@ -113,7 +114,7 @@ class db_controller:
         # Создание курсора для выполнения SQL-запросов
         cursor = conn.cursor()
 
-        select_data_query = f"""INSERT INTO category(name) VALUES ('{name}')"""
+        select_data_query = f"""INSERT INTO category(name) VALUES ('{name}');"""
         # выполнение запроса
         cursor.execute(select_data_query)
         # rows = cursor.fetchall()
@@ -131,13 +132,13 @@ class db_controller:
 
         try:
             # Проверка существования пользователя с заданным tgid
-            check_user_query = "SELECT 1 FROM category WHERE tgid = %s"
+            check_user_query = "SELECT 1 FROM users WHERE tgid = %s;"
             cursor.execute(check_user_query, (tgid,))
             user_exists = cursor.fetchone() is not None
 
             if not user_exists:
                 # Если пользователя нет, выполняем вставку
-                insert_user_query = "INSERT INTO category(tgid) VALUES (%s)"
+                insert_user_query = "INSERT INTO users(tgid, price) VALUES (%s, 0);"
                 cursor.execute(insert_user_query, (tgid,))
                 conn.commit()
                 print(f"User with tgid {tgid} added successfully.")
@@ -154,4 +155,23 @@ class db_controller:
 
         return None
     
-    
+    def edit_user_by_data(self, data):
+    # Укажите ваши данные для подключения к базе данных
+        connection = sql.connect(self.conn_string)
+        cursor = connection.cursor()
+
+        try:
+            # Выполняем SQL запрос для получения данных
+            # print(f"""UPDATE users SET prev = '{data['prev']}', {f"bin = ARRAY{data['bin']}," if len(data['bin']) > 0 else ''} price = '{data['price']}' WHERE tgid = '{data['tgid']}';""")
+            cursor.execute(f"""UPDATE users SET prev = '{data['prev']}', {f"bin = ARRAY{data['bin']}," if len(data['bin']) > 0 else ''} price = '{data['price']}' WHERE tgid = '{data['tgid']}';""")
+            connection.commit()
+            # Возвращаем результат в виде словаря
+            return 1
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
+
+        finally:
+            cursor.close()
+            connection.close()

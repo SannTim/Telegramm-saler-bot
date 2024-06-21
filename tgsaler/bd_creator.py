@@ -96,7 +96,7 @@ if conn:
                     id SERIAL PRIMARY KEY,
                     tgid BIGINT NOT NULL,
                     prev TEXT,
-                    bin INTEGER[] DEFAULT '{}',
+                    bin VARCHAR(255)[] DEFAULT '{}',
                     price DECIMAL(10, 2)
                 )
             """
@@ -104,7 +104,7 @@ if conn:
             print("Таблица 'users' успешно создана.")
         except Exception as e:
             print(f"Ошибка при создании таблицы 'users': {e}")
-
+        conn.commit()
         # Создание роли tgsaler и предоставление привилегий
         try:
             role_password = "tgsalerbot"
