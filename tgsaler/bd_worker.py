@@ -1,4 +1,5 @@
 import psycopg2 as sql
+from prettytable import PrettyTable
 
 def create_connection(
     db_name, db_user, db_password, db_host="localhost", db_port="5432"
@@ -176,7 +177,6 @@ class db_controller:
 
         try:
             # Выполняем SQL запрос для получения данных
-            # print(f"""UPDATE users SET prev = '{data['prev']}', {f"bin = ARRAY{data['bin']}," if len(data['bin']) > 0 else ''} price = '{data['price']}' WHERE tgid = '{data['tgid']}';""")
             cursor.execute(f"""UPDATE users SET prev = '{data['prev']}', {f"bin = ARRAY{data['bin']}," if len(data['bin']) > 0 else ''} price = '{data['price']}' WHERE tgid = '{data['tgid']}';""")
             connection.commit()
             # Возвращаем результат в виде словаря
@@ -189,3 +189,66 @@ class db_controller:
         finally:
             cursor.close()
             connection.close()
+
+    def del_category(self, name):
+        connection = sql.connect(self.conn_string)
+        cursor = connection.cursor()
+        cursor.execute(f"""DELETE FROM category WHERE name = '{name}';""")
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    def del_product(self, name):
+        connection = sql.connect(self.conn_string)
+        cursor = connection.cursor()
+        cursor.execute(f"""DELETE FROM product WHERE name = '{name}';""")
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    def edit_produt_by_data(self, data):
+        connection = sql.connect(self.conn_string)
+        cursor = connection.cursor()
+
+        try:
+            # Выполняем SQL запрос для получения данных
+            cursor.execute(f"""UPDATE product SET price = '{data['price']}', descr = '{data['descr']}', currency = '{data['currency']}', photo = '{data['photo']}', category = '{data['category']}'  WHERE name = '{data['name']}';""")
+            connection.commit()
+            # Возвращаем результат в виде словаря
+            return 1
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
+
+        finally:
+            cursor.close()
+            connection.close()
+
+    def show_product(self):
+        connection = sql.connect(self.conn_string)
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM product")
+        table = PrettyTable()
+        rows = cursor.fetchall()
+        headers = [column[0] for column in cursor.description]
+        table.field_names = headers
+        for row in rows:
+            table.add_row(row)
+        cursor.close()
+        connection.close()
+        return table
+
+    def show_category(self):
+        connection = sql.connect(self.conn_string)
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM category")
+        table = PrettyTable()
+        rows = cursor.fetchall()
+        headers = [column[0] for column in cursor.description]
+        table.field_names = headers
+        for row in rows:
+            table.add_row(row)
+        cursor.close()
+        connection.close()
+        return table
