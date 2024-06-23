@@ -2,6 +2,7 @@ import psycopg2 as sql
 from prettytable import PrettyTable
 import json
 
+
 def create_connection(
     db_name, db_user, db_password, db_host="localhost", db_port="5432"
 ):
@@ -21,16 +22,21 @@ def create_connection(
 
 
 class db_controller:
-    def __init__(self, host="localhost", port=5432, dbname = "tgsaler",user = "tgsaler",password = "tgsalerbot") -> None:
+    def __init__(
+        self,
+        host="localhost",
+        port=5432,
+        dbname="tgsaler",
+        user="tgsaler",
+        password="tgsalerbot",
+    ) -> None:
         # Параметры подключения к базе данных
         self.conn_string = (
             f"dbname={dbname} user={user} password={password} host={host} port={port}"
         )
 
-
-
     def get_user_by_id(self, user_id):
-    # Укажите ваши данные для подключения к базе данных
+        # Укажите ваши данные для подключения к базе данных
         connection = sql.connect(self.conn_string)
         cursor = connection.cursor()
 
@@ -58,7 +64,7 @@ class db_controller:
         cursor = conn.cursor()
         # print('aboba')
         # Определение столбцов таблицы products
-        column_names = ["id", "name", "category", "price","currency","descr","photo"]
+        column_names = ["id", "name", "category", "price", "currency", "descr", "photo"]
 
         select_data_query = f"SELECT * FROM product WHERE category = '{category_id}';"
         cursor.execute(select_data_query, (category_id,))
@@ -72,13 +78,13 @@ class db_controller:
         conn.close()
 
         return result
-    
+
     def get_product_data(self, name):
         # Подключение к базе данных
         conn = sql.connect(self.conn_string)
         # Создание курсора для выполнения SQL-запросов
         cursor = conn.cursor()
-        column_names = ["id", "name", "category", "price","currency","descr","photo"]
+        column_names = ["id", "name", "category", "price", "currency", "descr", "photo"]
         select_data_query = f"SELECT * FROM product WHERE name = '{name}';"
         cursor.execute(select_data_query, (name,))
         row = cursor.fetchone()
@@ -90,7 +96,7 @@ class db_controller:
         conn.close()
 
         return result
-    
+
     def get_categories(self):
         # Подключение к базе данных
         conn = sql.connect(self.conn_string)
@@ -106,7 +112,7 @@ class db_controller:
         conn.close()
         return rows
 
-    def add_product(self, name, category, price, currency, descr='', photo=''):
+    def add_product(self, name, category, price, currency, descr="", photo=""):
         # Подключение к базе данных
         conn = sql.connect(self.conn_string)
         # Создание курсора для выполнения SQL-запросов
@@ -170,15 +176,17 @@ class db_controller:
             conn.close()
 
         return None
-    
+
     def edit_user_by_data(self, data):
-    # Укажите ваши данные для подключения к базе данных
+        # Укажите ваши данные для подключения к базе данных
         connection = sql.connect(self.conn_string)
         cursor = connection.cursor()
 
         try:
             # Выполняем SQL запрос для получения данных
-            cursor.execute(f"""UPDATE users SET prev = '{data['prev']}', bin = '{json.dumps(data['bin'])}', price = '{data['price']}' WHERE tgid = '{data['tgid']}';""")
+            cursor.execute(
+                f"""UPDATE users SET prev = '{data['prev']}', bin = '{json.dumps(data['bin'])}', price = '{data['price']}' WHERE tgid = '{data['tgid']}';"""
+            )
             connection.commit()
             # Возвращаем результат в виде словаря
             return 1
@@ -213,7 +221,9 @@ class db_controller:
 
         try:
             # Выполняем SQL запрос для получения данных
-            cursor.execute(f"""UPDATE product SET price = '{data['price']}', descr = '{data['descr']}', currency = '{data['currency']}', photo = '{data['photo']}', category = '{data['category']}'  WHERE name = '{data['name']}';""")
+            cursor.execute(
+                f"""UPDATE product SET price = '{data['price']}', descr = '{data['descr']}', currency = '{data['currency']}', photo = '{data['photo']}', category = '{data['category']}'  WHERE name = '{data['name']}';"""
+            )
             connection.commit()
             # Возвращаем результат в виде словаря
             return 1

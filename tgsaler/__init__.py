@@ -6,13 +6,14 @@ import pandas as pd
 import time
 from tgsaler import bd_worker
 import os
+
 db_controller = bd_worker.db_controller
 try:
     with open(os.path.dirname(os.path.abspath(__file__)) + "/config.json") as f:
         props = json.load(f)
 except Exception:
-    print('You need to create config file first')
-    print('run command: tgsalerconfig')
+    print("You need to create config file first")
+    print("run command: tgsalerconfig")
 
 bot = telebot.TeleBot(props["token"], parse_mode=None)
 bd = db_controller()
@@ -32,12 +33,14 @@ deliver_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 bin_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 group_list = {}
 menu_catigories = []
+
+
 def update_markups():
-    
+
     global group_markup, groupdone_markup, deliver_markup, bin_markup, group_list, menu_catigories
-    tmp_menu_categories = [(i[0],i[1]) for i  in bd.get_categories()]
+    tmp_menu_categories = [(i[0], i[1]) for i in bd.get_categories()]
     menu_catigories = [i[1] for i in tmp_menu_categories]
-    
+
     # print(tmp_menu_categories)
     group_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     group_markup.add(types.KeyboardButton("Корзина"))
@@ -61,10 +64,12 @@ def update_markups():
         group_markup.add(types.KeyboardButton(gr[1]))
     del tmp_menu_categories
 
+
 def updater():
     while True:
         update_markups()
         time.sleep(10)
+
 
 def orders_send():
     orders_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -103,8 +108,10 @@ def form_order(usr, st, id, name):
 def get_usr_byid(id):
     return bd.get_user_by_id(id)
 
+
 def save_user_data(data):
     bd.edit_user_by_data(data)
+
 
 class group:
 
@@ -116,13 +123,7 @@ class group:
         self.positions = []
         for el in group_data:
             # print(el)
-            new_name = (
-                el["name"]
-                + ", "
-                + str(el["price"])
-                + " "
-                + el["currency"]
-            )
+            new_name = el["name"] + ", " + str(el["price"]) + " " + el["currency"]
             self.positions.append(new_name)
             all_descr[new_name] = el["descr"]
             all_prices[new_name] = el["price"]
@@ -139,24 +140,24 @@ class group:
         return self.markup
 
 
-
-
 @bot.message_handler(commands=["start", "help"])
 def send_welcome(message):
     global bd
     cid = message.chat.id
-    bd.add_user(tgid=f'{message.from_user.id}')
-    sti = open(os.path.dirname(os.path.abspath(__file__)) + "/stikers/AnimatedSticker.tgs", "rb")
+    bd.add_user(tgid=f"{message.from_user.id}")
+    sti = open(
+        os.path.dirname(os.path.abspath(__file__)) + "/stikers/AnimatedSticker.tgs",
+        "rb",
+    )
     bot.send_sticker(cid, sti)
     for m in props["Welcome messages"]:
         bot.send_message(cid, m)
     bot.send_message(cid, "Выберите категорию меню", reply_markup=group_markup)
 
 
-
 @bot.message_handler(content_types="text")
 def category_go(message):
-    global orders_id,menu_catigories,bd
+    global orders_id, menu_catigories, bd
     if message.from_user.id in admin_ids:
 
         for el in all_orders:
@@ -192,17 +193,17 @@ def category_go(message):
             bot.send_message(cid, "Проверьте, что в корзине все верно")
             bot.send_message(cid, form_bin_mes(usr), reply_markup=groupdone_markup)
             return
-        prod = bd.get_product_data(','.join(message.text.split(',')[:-1]))
+        prod = bd.get_product_data(",".join(message.text.split(",")[:-1]))
         # print(prod)
         try:
-            im = open("images/" + prod['photo'], "rb")
+            im = open("images/" + prod["photo"], "rb")
             bot.send_photo(cid, im)
         except Exception:
             bot.send_message(cid, "Фото появится в сокром времени!")
         if all_descr[message.text]:
             bot.send_message(cid, all_descr[message.text])
-        else: 
-            bot.send_message(cid,'Описание появится в скором времени')
+        else:
+            bot.send_message(cid, "Описание появится в скором времени")
         bot.send_message(cid, "Добавить в корзину?", reply_markup=bin_markup)
     elif message.text == "Нет":
         usr = get_usr_byid(message.from_user.id)
@@ -310,7 +311,6 @@ def category_go(message):
             for m in "Такой категории не существует,\n попробуйте еще раз":
                 bot.send_message(cid, m)
 
-    
     usr = get_usr_byid(message.from_user.id)
     usr["prev"] = message.text
     save_user_data(usr)
