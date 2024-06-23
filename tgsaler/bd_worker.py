@@ -1,5 +1,6 @@
 import psycopg2 as sql
 from prettytable import PrettyTable
+import json
 
 def create_connection(
     db_name, db_user, db_password, db_host="localhost", db_port="5432"
@@ -177,7 +178,7 @@ class db_controller:
 
         try:
             # Выполняем SQL запрос для получения данных
-            cursor.execute(f"""UPDATE users SET prev = '{data['prev']}', {f"bin = ARRAY{data['bin']}," if len(data['bin']) > 0 else ''} price = '{data['price']}' WHERE tgid = '{data['tgid']}';""")
+            cursor.execute(f"""UPDATE users SET prev = '{data['prev']}', bin = '{json.dumps(data['bin'])}', price = '{data['price']}' WHERE tgid = '{data['tgid']}';""")
             connection.commit()
             # Возвращаем результат в виде словаря
             return 1

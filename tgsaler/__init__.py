@@ -156,8 +156,8 @@ def category_go(message):
     if message.from_user.id in admin_ids:
 
         for el in all_orders:
-            print(el[: len(message.text)])
-            print(message.text)
+            # print(el[: len(message.text)])
+            # print(message.text)
             if el[: len(message.text)] == message.text:
                 bot.send_message(all_orders[el], "Ваш заказ готов!")
                 bot.send_message(
@@ -189,13 +189,16 @@ def category_go(message):
             bot.send_message(cid, form_bin_mes(usr), reply_markup=groupdone_markup)
             return
         prod = bd.get_product_data(','.join(message.text.split(',')[:-1]))
-        print(prod)
+        # print(prod)
         try:
             im = open("images/" + prod['photo'], "rb")
             bot.send_photo(cid, im)
         except Exception:
             bot.send_message(cid, "Фото появится в сокром времени!")
-        bot.send_message(cid, all_descr[message.text])
+        if all_descr[message.text]:
+            bot.send_message(cid, all_descr[message.text])
+        else: 
+            bot.send_message(cid,'Описание появится в скором времени')
         bot.send_message(cid, "Добавить в корзину?", reply_markup=bin_markup)
     elif message.text == "Нет":
         usr = get_usr_byid(message.from_user.id)
@@ -241,7 +244,6 @@ def category_go(message):
     elif message.text == "Убрать всё":
         usr = get_usr_byid(message.from_user.id)
         usr["price"] = 0
-        del usr["bin"]
         usr["bin"] = {}
         save_user_data(usr)
     elif message.text == "Всё верно":
@@ -260,7 +262,7 @@ def category_go(message):
         ] = cid
         orders_id += 1
         orders_send()
-        usr = json.load(f)
+        usr = get_usr_byid(message.from_user.id)
         del usr["bin"]
         usr["bin"] = {}
         usr["price"] = 0

@@ -98,7 +98,7 @@ if conn:
                     id SERIAL PRIMARY KEY,
                     tgid BIGINT NOT NULL,
                     prev TEXT,
-                    bin VARCHAR(255)[] DEFAULT '{}',
+                    bin JSON DEFAULT '{}',
                     price DECIMAL(10, 2),
                     UNIQUE(tgid)
                 )
