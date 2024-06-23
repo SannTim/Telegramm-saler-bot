@@ -7,8 +7,12 @@ import time
 from tgsaler import bd_worker
 import os
 db_controller = bd_worker.db_controller
-with open(os.path.dirname(os.path.abspath(__file__)) + "/config.json") as f:
-    props = json.load(f)
+try:
+    with open(os.path.dirname(os.path.abspath(__file__)) + "/config.json") as f:
+        props = json.load(f)
+except Exception:
+    print('You need to create config file first')
+    print('run command: tgsalerconfig')
 
 bot = telebot.TeleBot(props["token"], parse_mode=None)
 bd = db_controller()
