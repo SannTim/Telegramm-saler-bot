@@ -27,6 +27,7 @@ packages = ["tgsaler", "tgsaler.bd_console", "tgsaler.setuper"]
 include-package-data = true
 package-dir = {"tgsaler" = "tgsaler"}
 
+
 [tool.setuptools.package-data]
 "tgsaler" = ["**"]
 
@@ -35,4 +36,5 @@ tgsalersetup = "tgsaler.setuper.config_creator:__main__:start_main"
 tgsalerconfig = "tgsaler.setuper.config_creator:create_config"
 tgsalercrdb = "tgsaler.setuper.bd_creator:create_db"
 tgsaler = "tgsaler.__main__:start_main"
+tgsalerconsole = "tgsaler.bd_console.__main__:run_main"
 

@@ -10,6 +10,9 @@ pytelegrambotapi = "*"
 psycopg2 = "*"
 build = "*"
 doit = "*"
+flake8 = "*"
+pycodestyle = "*"
+pydocstyle = "*"
 
 [dev-packages]
 

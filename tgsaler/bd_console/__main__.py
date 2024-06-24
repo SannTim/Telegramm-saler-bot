@@ -1,5 +1,8 @@
 """Запуск cmd."""
 from . import app
 
-cm = app()
-cm.cmdloop()
+
+def run_main():
+    """Запуск cmd."""
+    cm = app()
+    cm.cmdloop()
