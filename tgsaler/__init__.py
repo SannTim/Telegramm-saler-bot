@@ -6,7 +6,6 @@ import telebot
 from telebot import types
 import json
 import os
-import pandas as pd
 import time
 from tgsaler import bd_worker
 import os
@@ -18,8 +17,11 @@ try:
 except Exception:
     print("You need to create config file first")
     print("run command: tgsalerconfig")
+    props = None
 
-bot = telebot.TeleBot(props["token"], parse_mode=None)
+bot = None
+if props:
+    bot = telebot.TeleBot(props["token"], parse_mode=None)
 bd = db_controller()
 all_positions = []
 all_prices = {}

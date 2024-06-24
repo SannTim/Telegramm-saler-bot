@@ -15,7 +15,8 @@ classifiers = [
 dependencies = [
     "setuptools",
     "psycopg2",
-	"pyTelegramBotAPI"
+	"pyTelegramBotAPI",
+    "prettytable"
 ]
 [build-system]
 requires=["setuptools"]
