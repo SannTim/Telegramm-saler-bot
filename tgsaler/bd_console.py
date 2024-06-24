@@ -1,6 +1,21 @@
 import bd_worker
 import cmd
 import shlex
+import gettext
+import locale
+import os
+
+curloc="ru"
+
+def _(*args):
+    return LOCALES[curloc].gettext(*args)
+
+trans_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "./trans"))
+
+LOCALES = {
+    "ru": gettext.translation("mood", trans_dir, ["ru"]),
+    "en": gettext.NullTranslations(),
+}
 
 
 class app(cmd.Cmd):
@@ -31,7 +46,7 @@ class app(cmd.Cmd):
         lexer.quotes = ['"', "'"]
         tokens = list(lexer)
         try:
-            currency = "руб"
+            currency = _("$")
             descr = ""
             photo = ""
             if args.find("currency") != -1:
@@ -116,36 +131,36 @@ class app(cmd.Cmd):
         print(self.bd.show_category())
 
     def help_showproducts(self):
-        print("Shows products table")
-        print("Usage: showproducts")
+        print(_("Shows products table"))
+        print(_("Usage: showproducts"))
 
     def help_showcategory(self):
-        print("Shows category table")
-        print("Usage: showcategory")
+        print(_("Shows category table"))
+        print(_("Usage: showcategory"))
 
     def help_addcategory(self):
-        print("Adds new category")
-        print("Usage: addcategory name <name>")
+        print(_("Adds new category"))
+        print(_("Usage: addcategory name <name>"))
 
     def help_addproduct(self):
-        print("Adds new product")
+        print(_("Adds new product"))
         print(
-            "Usage: addproduct name <name> price <price> descr <descr> currency <currency> photo <photo> category <category>"
+            _("Usage: addproduct name <name> price <price> descr <descr> currency <currency> photo <photo> category <category>")
         )
 
     def help_delproduct(self):
-        print("Deletes product")
-        print("Usage: delproduct name <name>")
+        print(_("Deletes product"))
+        print(_("Usage: delproduct name <name>"))
 
     def help_editproduct(self):
-        print("Edits new product")
+        print(_("Edits new product"))
         print(
-            "Usage: editproduct name <name> price <price> descr <descr> currency <currency> photo <photo> category <category>"
+            _("Usage: editproduct name <name> price <price> descr <descr> currency <currency> photo <photo> category <category>")
         )
 
     def help_delcategory(self):
-        print("Deletes category")
-        print("Usage: delcategory name <name>")
+        print(_("Deletes category"))
+        print(_("Usage: delcategory name <name>"))
 
     def do_EOF(self, args):
         return True

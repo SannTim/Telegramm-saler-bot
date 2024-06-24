@@ -31,9 +31,14 @@ class db_controller:
         password="tgsalerbot",
     ) -> None:
         # Параметры подключения к базе данных
-        self.conn_string = (
-            f"dbname={dbname} user={user} password={password} host={host} port={port}"
-        )
+        try:
+            self.conn_string = (
+                f"dbname={dbname} user={user} password={password} host={host} port={port}"
+            )
+        except Exception:
+            print("Connection failed")
+            print("You need to create database first")
+            print("Run command: tgsalerdatabase")
 
     def get_user_by_id(self, user_id):
         # Укажите ваши данные для подключения к базе данных
