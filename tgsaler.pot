@@ -1,0 +1,91 @@
+# Translations template for PROJECT.
+# Copyright (C) 2024 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2024-06-24 04:14+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.0\n"
+
+#: tgsaler/bd_console.py:49
+msgid "$"
+msgstr ""
+
+#: tgsaler/bd_console.py:132
+msgid "Language changed to"
+msgstr ""
+
+#: tgsaler/bd_console.py:137
+msgid "Changes language to chosen one"
+msgstr ""
+
+#: tgsaler/bd_console.py:146
+msgid "Shows products table"
+msgstr ""
+
+#: tgsaler/bd_console.py:147
+msgid "Usage: showproducts"
+msgstr ""
+
+#: tgsaler/bd_console.py:150
+msgid "Shows category table"
+msgstr ""
+
+#: tgsaler/bd_console.py:151
+msgid "Usage: showcategory"
+msgstr ""
+
+#: tgsaler/bd_console.py:154
+msgid "Adds new category"
+msgstr ""
+
+#: tgsaler/bd_console.py:155
+msgid "Usage: addcategory name <name>"
+msgstr ""
+
+#: tgsaler/bd_console.py:158
+msgid "Adds new product"
+msgstr ""
+
+#: tgsaler/bd_console.py:160
+msgid ""
+"Usage: addproduct name <name> price <price> descr <descr> currency "
+"<currency> photo <photo> category <category>"
+msgstr ""
+
+#: tgsaler/bd_console.py:164
+msgid "Deletes product"
+msgstr ""
+
+#: tgsaler/bd_console.py:165
+msgid "Usage: delproduct name <name>"
+msgstr ""
+
+#: tgsaler/bd_console.py:168
+msgid "Edits new product"
+msgstr ""
+
+#: tgsaler/bd_console.py:170
+msgid ""
+"Usage: editproduct name <name> price <price> descr <descr> currency "
+"<currency> photo <photo> category <category>"
+msgstr ""
+
+#: tgsaler/bd_console.py:174
+msgid "Deletes category"
+msgstr ""
+
+#: tgsaler/bd_console.py:175
+msgid "Usage: delcategory name <name>"
+msgstr ""
+

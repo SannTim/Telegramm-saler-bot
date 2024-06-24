@@ -10,10 +10,10 @@ curloc="ru"
 def _(*args):
     return LOCALES[curloc].gettext(*args)
 
-trans_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "./trans"))
+trans_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "./translations"))
 
 LOCALES = {
-    "ru": gettext.translation("mood", trans_dir, ["ru"]),
+    "ru": gettext.translation("tgsaler", trans_dir, ["ru"]),
     "en": gettext.NullTranslations(),
 }
 
@@ -123,6 +123,18 @@ class app(cmd.Cmd):
             self.bd.edit_produt_by_data(pr)
         except Exception:
             self.help_editproduct()
+
+    def do_lang(self, args):
+        # print(args.split()[-1])
+        global curloc
+        if len(args) > 0 and args.split()[-1] in LOCALES.keys():
+            curloc = args.split()[-1]
+            print(_("Language changed to"),args.split()[-1])
+        else:
+            self.help_lang()
+    
+    def help_lang(self):
+        print(_('Changes language to chosen one'))
 
     def do_showproducts(self, args):
         print(self.bd.show_product())
