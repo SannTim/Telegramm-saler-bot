@@ -58,3 +58,29 @@ def task_test():
             "test.py"
         ],
     }
+
+def task_sdist():
+    """Initialises project"""
+    return {
+        "actions": ["python3 -m build --sdist"],
+        "targets": ["dist/tgsaler-1.0.tar.gz"],
+        "file_dep": [
+            "MANIFEST.in",
+            "pyproject.toml",
+            *glob.glob("./tgsaler/*.py"),
+        ],
+    }
+
+
+def task_wheel():
+    """Builds wheel"""
+    return {
+        "actions": ["python3 -m build -n --wheel"],
+        "file_dep": [
+            "MANIFEST.in",
+            "pyproject.toml",
+            *glob.glob("./tgsaler/*.py"),
+            "dist/tgsaler-1.0.tar.gz",
+        ],
+        "verbosity": 0,
+    }

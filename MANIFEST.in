@@ -1,0 +1,3 @@
+include tgsaler.pot
+recursive-include tgsaler *py
+graft tgsaler/translations

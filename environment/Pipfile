@@ -8,6 +8,8 @@ telebot = "*"
 pandas = "*"
 pytelegrambotapi = "*"
 psycopg2 = "*"
+build = "*"
+doit = "*"
 
 [dev-packages]
 
