@@ -23,7 +23,7 @@ requires=["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["tgsaler", "tgsaler.bd_console"]
+packages = ["tgsaler", "tgsaler.bd_console", "tgsaler.setuper"]
 include-package-data = true
 package-dir = {"tgsaler" = "tgsaler"}
 
@@ -31,7 +31,8 @@ package-dir = {"tgsaler" = "tgsaler"}
 "tgsaler" = ["**"]
 
 [project.scripts]
-tgsalerconfig = "tgsaler.config_creator:create_config"
-tgsalercrdb = "tgsaler.bd_creator:create_db"
+tgsalersetup = "tgsaler.setuper.config_creator:__main__:start_main"
+tgsalerconfig = "tgsaler.setuper.config_creator:create_config"
+tgsalercrdb = "tgsaler.setuper.bd_creator:create_db"
 tgsaler = "tgsaler.__main__:start_main"
 

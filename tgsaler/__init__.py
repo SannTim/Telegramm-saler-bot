@@ -17,11 +17,10 @@ try:
 except Exception:
     print("You need to create config file first")
     print("run command: tgsalerconfig")
-    props = None
+    exit
 
-bot = None
-if props:
-    bot = telebot.TeleBot(props["token"], parse_mode=None)
+
+bot = telebot.TeleBot(props["token"], parse_mode=None)
 bd = db_controller()
 all_positions = []
 all_prices = {}
