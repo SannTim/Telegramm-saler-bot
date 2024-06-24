@@ -1,4 +1,4 @@
-import bd_worker
+from tgsaler import bd_worker
 import cmd
 import shlex
 import gettext
@@ -10,7 +10,7 @@ curloc="ru"
 def _(*args):
     return LOCALES[curloc].gettext(*args)
 
-trans_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "./translations"))
+trans_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../translations"))
 
 LOCALES = {
     "ru": gettext.translation("tgsaler", trans_dir, ["ru"]),
@@ -178,5 +178,4 @@ class app(cmd.Cmd):
         return True
 
 
-cm = app()
-cm.cmdloop()
+

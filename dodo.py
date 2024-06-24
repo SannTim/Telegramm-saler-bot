@@ -47,3 +47,14 @@ def task_mo():
         "file_dep": [f"{PODEST}/ru/LC_MESSAGES/tgsaler.po"],
         "targets": [f"{PODEST}/ru/LC_MESSAGES/tgsaler.mo"],
     }
+
+def task_test():
+    """Test programm"""
+    return {
+        "actions": ["python3 -m unittest -v"],
+        "file_dep": [
+            f"{PODEST}/ru/LC_MESSAGES/tgsaler.mo",
+            *glob.glob("tgsaler/*.py"),
+            "test.py"
+        ],
+    }
