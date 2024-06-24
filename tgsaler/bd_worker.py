@@ -36,7 +36,7 @@ def create_connection(
 
 class db_controller:
     """Класс для совершения манипуляций с базой данных."""
-    
+
     def __init__(
         self,
         host="localhost",
