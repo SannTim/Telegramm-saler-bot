@@ -129,10 +129,14 @@ class db_controller:
         # print(rows)
         select_data_query = f"""INSERT INTO product(name, category, price, currency, descr, photo) VALUES ('{name}', '{rows[0][0]}', '{price}', '{currency}','{descr}', '{photo}');"""
         # выполнение запроса
+        
         cursor.execute(select_data_query)
+        
         conn.commit()
+        # print(select_data_query)
         cursor.close()
         conn.close()
+        
         return None
 
     def add_category(self, name):

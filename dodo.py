@@ -20,7 +20,7 @@ def task_pot():
     """Re-create .pot ."""
     return {
         "actions": [f"pybabel extract -o {POTFILE} tgsaler"],
-        "file_dep": ["tgsaler/bd_console.py"],
+        "file_dep": ["tgsaler/bd_console/__init__.py"],
         "targets": [f"{POTFILE}"],
     }
 
