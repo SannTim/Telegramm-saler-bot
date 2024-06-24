@@ -2,14 +2,13 @@
 Модуль работы телеграмм бота
 с клиентом и продавцом
 """
-import pathlib
+
 import telebot
 from telebot import types
 import json
 import os
 import time
 from tgsaler import bd_worker
-import os
 
 db_controller = bd_worker.db_controller
 try:
@@ -39,7 +38,6 @@ deliver_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 bin_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 group_list = {}
 menu_catigories = []
-
 
 
 def update_markups():
@@ -269,8 +267,7 @@ def category_go(message):
             reply_markup=group_list[message.text].markup,
         )
     elif message.text == "Назад":
-        bot.send_message(cid, "Выберите категорию меню",
-                         reply_markup=group_markup)
+        bot.send_message(cid, "Выберите категорию меню", reply_markup=group_markup)
     elif message.text in all_positions:
         usr = get_usr_byid(message.from_user.id)
         if usr["prev"] == "Убрать товар":
@@ -279,8 +276,7 @@ def category_go(message):
 
             save_user_data(usr)
             bot.send_message(cid, "Проверьте, что в корзине все верно")
-            bot.send_message(cid, form_bin_mes(
-                usr), reply_markup=groupdone_markup)
+            bot.send_message(cid, form_bin_mes(usr), reply_markup=groupdone_markup)
             return
         prod = bd.get_product_data(",".join(message.text.split(",")[:-1]))
         # print(prod)
@@ -316,11 +312,9 @@ def category_go(message):
             usr["bin"][usr["prev"]] += 1
             usr["price"] += all_prices[usr["prev"]]
             bot.send_message(cid, form_bin_mes(usr))
-            bot.send_message(cid, "Продолжить покупки?",
-                             reply_markup=bin_markup)
+            bot.send_message(cid, "Продолжить покупки?", reply_markup=bin_markup)
         elif usr["prev"] == "Да":
-            bot.send_message(cid, "Выберите категорию меню",
-                             reply_markup=group_markup)
+            bot.send_message(cid, "Выберите категорию меню", reply_markup=group_markup)
         else:
             bot.send_message(cid, props["NotFound"], reply_markup=group_markup)
         save_user_data(usr)
@@ -329,8 +323,7 @@ def category_go(message):
         bot.send_message(cid, form_bin_mes(usr))
         bot.send_message(cid, "Продолжить покупки?", reply_markup=bin_markup)
     elif message.text == "Продолжить покупки":
-        bot.send_message(cid, "Выберите категорию меню",
-                         reply_markup=group_markup)
+        bot.send_message(cid, "Выберите категорию меню", reply_markup=group_markup)
     elif message.text == "Убрать товар":
         tmp_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         usr = get_usr_byid(message.from_user.id)

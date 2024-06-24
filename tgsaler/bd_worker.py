@@ -1,6 +1,7 @@
 """
 Модуль, реализующий запросы к бд.
 """
+
 import psycopg2 as sql
 from prettytable import PrettyTable
 import json
@@ -55,9 +56,7 @@ class db_controller:
         """
         # Параметры подключения к базе данных
         try:
-            self.conn_string = (
-                f"dbname={dbname} user={user} password={password} host={host} port={port}"
-            )
+            self.conn_string = f"dbname={dbname} user={user} password={password} host={host} port={port}"
         except Exception:
             print("Connection failed")
             print("You need to create database first")
@@ -106,8 +105,7 @@ class db_controller:
         cursor = conn.cursor()
         # print('aboba')
         # Определение столбцов таблицы products
-        column_names = ["id", "name", "category",
-                        "price", "currency", "descr", "photo"]
+        column_names = ["id", "name", "category", "price", "currency", "descr", "photo"]
 
         select_data_query = f"SELECT * FROM product WHERE category = '{category_id}';"
         cursor.execute(select_data_query, (category_id,))
@@ -134,8 +132,7 @@ class db_controller:
         conn = sql.connect(self.conn_string)
         # Создание курсора для выполнения SQL-запросов
         cursor = conn.cursor()
-        column_names = ["id", "name", "category",
-                        "price", "currency", "descr", "photo"]
+        column_names = ["id", "name", "category", "price", "currency", "descr", "photo"]
         select_data_query = f"SELECT * FROM product WHERE name = '{name}';"
         cursor.execute(select_data_query, (name,))
         row = cursor.fetchone()
@@ -160,7 +157,7 @@ class db_controller:
         # Создание курсора для выполнения SQL-запросов
         cursor = conn.cursor()
 
-        select_data_query = f"SELECT id, name FROM category;"
+        select_data_query = "SELECT id, name FROM category;"
         cursor.execute(select_data_query)
         rows = cursor.fetchall()
 

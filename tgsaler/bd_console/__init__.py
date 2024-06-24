@@ -1,17 +1,19 @@
 """
 Модуль, реализующий консоль.
 """
+
 from tgsaler import bd_worker
 import cmd
 import shlex
 import gettext
-import locale
 import os
 
-curloc="ru"
+curloc = "ru"
+
 
 def _(*args):
     return LOCALES[curloc].gettext(*args)
+
 
 trans_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../translations"))
 
@@ -25,6 +27,7 @@ class app(cmd.Cmd):
     """
     Класс, реализующий интерфейс командной строки.
     """
+
     prompt = "> "
 
     def preloop(self) -> None:
@@ -168,15 +171,15 @@ class app(cmd.Cmd):
         global curloc
         if len(args) > 0 and args.split()[-1] in LOCALES.keys():
             curloc = args.split()[-1]
-            print(_("Language changed to"),args.split()[-1])
+            print(_("Language changed to"), args.split()[-1])
         else:
             self.help_lang()
-    
+
     def help_lang(self):
         """
         Выводит справку по команде lang.
         """
-        print(_('Changes language to chosen one'))
+        print(_("Changes language to chosen one"))
 
     def do_showproducts(self, args):
         """
@@ -221,7 +224,9 @@ class app(cmd.Cmd):
         """
         print(_("Adds new product"))
         print(
-            _("Usage: addproduct name <name> price <price> descr <descr> currency <currency> photo <photo> category <category>")
+            _(
+                "Usage: addproduct name <name> price <price> descr <descr> currency <currency> photo <photo> category <category>"
+            )
         )
 
     def help_delproduct(self):
@@ -237,7 +242,9 @@ class app(cmd.Cmd):
         """
         print(_("Edits new product"))
         print(
-            _("Usage: editproduct name <name> price <price> descr <descr> currency <currency> photo <photo> category <category>")
+            _(
+                "Usage: editproduct name <name> price <price> descr <descr> currency <currency> photo <photo> category <category>"
+            )
         )
 
     def help_delcategory(self):
@@ -256,6 +263,3 @@ class app(cmd.Cmd):
         :rtype: bool
         """
         return True
-
-
-

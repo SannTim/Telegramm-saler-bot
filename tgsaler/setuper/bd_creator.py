@@ -1,7 +1,7 @@
-from typing import ParamSpecArgs
 import psycopg2
 from psycopg2 import sql, OperationalError
 import sys
+
 
 # Подключение к PostgreSQL
 def create_db():
@@ -20,7 +20,6 @@ def create_db():
         password = input("Enter password\n>")
         host = input("Enter host\n>")
 
-
     def create_connection(db_name, db_user, db_password, db_host):
         try:
             conn = psycopg2.connect(
@@ -31,7 +30,6 @@ def create_db():
         except OperationalError as e:
             print(f"Ошибка при соединении с базой данных '{db_name}': {e}")
             return None
-
 
     # Подключение к PostgreSQL
     conn = create_connection("postgres", user, password, host)
@@ -112,7 +110,8 @@ def create_db():
             try:
                 role_password = "tgsalerbot"
                 cur.execute(
-                    sql.SQL("CREATE ROLE tgsaler WITH LOGIN PASSWORD %s"), [role_password]
+                    sql.SQL("CREATE ROLE tgsaler WITH LOGIN PASSWORD %s"),
+                    [role_password],
                 )
                 cur.execute("GRANT ALL PRIVILEGES ON DATABASE tgsaler TO tgsaler")
                 cur.execute(
