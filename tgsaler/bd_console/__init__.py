@@ -1,3 +1,6 @@
+"""
+Модуль, реализующий консоль.
+"""
 from tgsaler import bd_worker
 import cmd
 import shlex
@@ -19,13 +22,24 @@ LOCALES = {
 
 
 class app(cmd.Cmd):
+    """
+    Класс, реализующий интерфейс командной строки.
+    """
     prompt = "> "
 
     def preloop(self) -> None:
+        """
+        Настройка перед запуском интерактивной сессии.
+        """
         self.bd = bd_worker.db_controller()
         return super().preloop()
 
     def do_addcategory(self, args):
+        """
+        Добавляет новую категорию продуктов.
+
+        :param str args: Аргументы команды
+        """
         lexer = shlex.shlex(args, posix=True)
         lexer.whitespace_split = True
         lexer.whitespace = " "
@@ -40,6 +54,11 @@ class app(cmd.Cmd):
             self.help_addcategory()
 
     def do_addproduct(self, args):
+        """
+        Добавляет новый продукт.
+
+        :param str args: Аргументы команды
+        """
         lexer = shlex.shlex(args, posix=True)
         lexer.whitespace_split = True
         lexer.whitespace = " "
@@ -66,6 +85,11 @@ class app(cmd.Cmd):
             self.help_addproduct()
 
     def do_delproduct(self, args):
+        """
+        Удаляет продукт.
+
+        :param str args: Аргументы команды
+        """
         lexer = shlex.shlex(args, posix=True)
         lexer.whitespace_split = True
         lexer.whitespace = " "
@@ -80,6 +104,11 @@ class app(cmd.Cmd):
             self.help_delproduct()
 
     def do_delcategory(self, args):
+        """
+        Удаляет категорию продуктов.
+
+        :param str args: Аргументы команды
+        """
         lexer = shlex.shlex(args, posix=True)
         lexer.whitespace_split = True
         lexer.whitespace = " "
@@ -94,6 +123,11 @@ class app(cmd.Cmd):
             self.help_delcategory()
 
     def do_editproduct(self, args):
+        """
+        Редактирует данные о продукте.
+
+        :param str args: Аргументы команды
+        """
         lexer = shlex.shlex(args, posix=True)
         lexer.whitespace_split = True
         lexer.whitespace = " "
@@ -125,6 +159,11 @@ class app(cmd.Cmd):
             self.help_editproduct()
 
     def do_lang(self, args):
+        """
+        Изменяет язык интерфейса.
+
+        :param str args: Аргументы команды
+        """
         # print(args.split()[-1])
         global curloc
         if len(args) > 0 and args.split()[-1] in LOCALES.keys():
@@ -134,47 +173,88 @@ class app(cmd.Cmd):
             self.help_lang()
     
     def help_lang(self):
+        """
+        Выводит справку по команде lang.
+        """
         print(_('Changes language to chosen one'))
 
     def do_showproducts(self, args):
+        """
+        Отображает таблицу всех продуктов.
+
+        :param str args: Аргументы команды
+        """
         print(self.bd.show_product())
 
     def do_showcategory(self, args):
+        """
+        Отображает таблицу всех категорий.
+
+        :param str args: Аргументы команды
+        """
         print(self.bd.show_category())
 
     def help_showproducts(self):
+        """
+        Выводит справку по команде showproducts.
+        """
         print(_("Shows products table"))
         print(_("Usage: showproducts"))
 
     def help_showcategory(self):
+        """
+        Выводит справку по команде showcategory.
+        """
         print(_("Shows category table"))
         print(_("Usage: showcategory"))
 
     def help_addcategory(self):
+        """
+        Выводит справку по команде addcategory.
+        """
         print(_("Adds new category"))
         print(_("Usage: addcategory name <name>"))
 
     def help_addproduct(self):
+        """
+        Выводит справку по команде addproduct.
+        """
         print(_("Adds new product"))
         print(
             _("Usage: addproduct name <name> price <price> descr <descr> currency <currency> photo <photo> category <category>")
         )
 
     def help_delproduct(self):
+        """
+        Выводит справку по команде delproduct.
+        """
         print(_("Deletes product"))
         print(_("Usage: delproduct name <name>"))
 
     def help_editproduct(self):
+        """
+        Выводит справку по команде editproduct.
+        """
         print(_("Edits new product"))
         print(
             _("Usage: editproduct name <name> price <price> descr <descr> currency <currency> photo <photo> category <category>")
         )
 
     def help_delcategory(self):
+        """
+        Выводит справку по команде delcategory.
+        """
         print(_("Deletes category"))
         print(_("Usage: delcategory name <name>"))
 
     def do_EOF(self, args):
+        """
+        Обработчик команды EOF (Ctrl+D).
+
+        :param str args: Аргументы команды
+        :return: Флаг завершения сессии
+        :rtype: bool
+        """
         return True
 
 

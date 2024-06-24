@@ -1,4 +1,4 @@
-tgsaler Module
+tgsaler
 ===============
 
 .. automodule:: tgsaler
