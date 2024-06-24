@@ -1,3 +1,7 @@
+"""
+Модуль реализующий сервер для игры MOOD.
+"""
+import pathlib
 import telebot
 from telebot import types
 import json
@@ -35,12 +39,14 @@ group_list = {}
 menu_catigories = []
 
 
+
 def update_markups():
+    """
+    Функция обновления обновления клавиатурной разметки.
+    """
 
-    global group_markup, groupdone_markup, deliver_markup, bin_markup, group_list, menu_catigories
+    global group_markup, groupdone_markup, deliver_markup, bin_markup, group_list
     tmp_menu_categories = [(i[0], i[1]) for i in bd.get_categories()]
-    menu_catigories = [i[1] for i in tmp_menu_categories]
-
     # print(tmp_menu_categories)
     group_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     group_markup.add(types.KeyboardButton("Корзина"))
@@ -66,12 +72,20 @@ def update_markups():
 
 
 def updater():
+    """
+    Функция, вызывающая функцию update_markups() каждые 10 секунд.
+    """
+
     while True:
         update_markups()
         time.sleep(10)
 
 
 def orders_send():
+    """
+    Функция отправления сообщения с заказами администраторам.
+    """
+
     orders_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     msg = "\n".join(all_orders)
     if len(all_orders) == 0:
@@ -84,6 +98,16 @@ def orders_send():
 
 
 def form_bin_mes(usr):
+    """
+    Формирует текст для корзины пользователя.
+
+    Args:
+        usr (dict): Информация о пользователе и его корзине.
+
+    Returns:
+        str: Текст с информацией о корзине пользователя.
+    """
+
     ans = "В вашей корзине сейчас:\n"
     for el in usr["bin"]:
         if usr["bin"][el] != 1:
@@ -94,6 +118,19 @@ def form_bin_mes(usr):
 
 
 def form_order(usr, st, id, name):
+    """
+    Формирует текст заказа для пользователя.
+
+    Args:
+        usr (dict): Информация о пользователе и его корзине.
+        st (str): Статус заказа.
+        id (int): Уникальный идентификатор заказа.
+        name (str): Имя пользователя.
+
+    Returns:
+        str: Текст заказа для пользователя.
+    """
+
     # print(id)
     ans = str(id) + " заказ:\n"
     ans += "От пользователя: @" + name + "\n"
@@ -114,8 +151,26 @@ def save_user_data(data):
 
 
 class group:
+    """
+    Класс, представляющий группу товаров.
+
+    Attributes:
+        markup (telebot.types.ReplyKeyboardMarkup): Маркап клавиатуры.
+        positions (list): Список позиций товаров в группе.
+
+    Methods:
+        check(x): Проверяет наличие товара в группе.
+        markup(): Возвращает маркап клавиатуры для группы.
+    """
 
     def __init__(self, group_data):
+        """
+        Инициализирует группу товаров.
+
+        Args:
+            group_data (list): Список данных о товарах в группе.
+        """
+
         global all_positions
         self.markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         self.markup.add(types.KeyboardButton("Назад"))
@@ -134,14 +189,37 @@ class group:
         all_positions = all_positions + self.positions
 
     def check(self, x):
+        """
+        Проверяет наличие товара в группе.
+
+        Args:
+            x (str): Наименование товара.
+
+        Returns:
+            bool: Результат проверки.
+        """
+
         return x in self.positions
 
     def markup(self):
+        """
+        Возвращает маркап клавиатуры для группы.
+
+        Returns:
+            telebot.types.ReplyKeyboardMarkup: Маркап клавиатуры.
+        """
+
         return self.markup
 
 
 @bot.message_handler(commands=["start", "help"])
 def send_welcome(message):
+    """
+    Отправляет приветственные сообщения при командах /start и /help.
+
+    Args:
+        message (telebot.types.Message): Сообщение от пользователя.
+    """
     global bd
     cid = message.chat.id
     bd.add_user(tgid=f"{message.from_user.id}")
@@ -157,7 +235,14 @@ def send_welcome(message):
 
 @bot.message_handler(content_types="text")
 def category_go(message):
+    """
+    Обрабатывает сообщения пользователя и реагирует на них.
+
+    Args:
+        message (telebot.types.Message): Сообщение от пользователя.
+    """
     global orders_id, menu_catigories, bd
+    # print(message.from_user)
     if message.from_user.id in admin_ids:
 
         for el in all_orders:
@@ -182,7 +267,8 @@ def category_go(message):
             reply_markup=group_list[message.text].markup,
         )
     elif message.text == "Назад":
-        bot.send_message(cid, "Выберите категорию меню", reply_markup=group_markup)
+        bot.send_message(cid, "Выберите категорию меню",
+                         reply_markup=group_markup)
     elif message.text in all_positions:
         usr = get_usr_byid(message.from_user.id)
         if usr["prev"] == "Убрать товар":
@@ -191,7 +277,8 @@ def category_go(message):
 
             save_user_data(usr)
             bot.send_message(cid, "Проверьте, что в корзине все верно")
-            bot.send_message(cid, form_bin_mes(usr), reply_markup=groupdone_markup)
+            bot.send_message(cid, form_bin_mes(
+                usr), reply_markup=groupdone_markup)
             return
         prod = bd.get_product_data(",".join(message.text.split(",")[:-1]))
         # print(prod)
@@ -227,9 +314,11 @@ def category_go(message):
             usr["bin"][usr["prev"]] += 1
             usr["price"] += all_prices[usr["prev"]]
             bot.send_message(cid, form_bin_mes(usr))
-            bot.send_message(cid, "Продолжить покупки?", reply_markup=bin_markup)
+            bot.send_message(cid, "Продолжить покупки?",
+                             reply_markup=bin_markup)
         elif usr["prev"] == "Да":
-            bot.send_message(cid, "Выберите категорию меню", reply_markup=group_markup)
+            bot.send_message(cid, "Выберите категорию меню",
+                             reply_markup=group_markup)
         else:
             bot.send_message(cid, props["NotFound"], reply_markup=group_markup)
         save_user_data(usr)
@@ -238,7 +327,8 @@ def category_go(message):
         bot.send_message(cid, form_bin_mes(usr))
         bot.send_message(cid, "Продолжить покупки?", reply_markup=bin_markup)
     elif message.text == "Продолжить покупки":
-        bot.send_message(cid, "Выберите категорию меню", reply_markup=group_markup)
+        bot.send_message(cid, "Выберите категорию меню",
+                         reply_markup=group_markup)
     elif message.text == "Убрать товар":
         tmp_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         usr = get_usr_byid(message.from_user.id)
