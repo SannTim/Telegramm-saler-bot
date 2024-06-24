@@ -32,7 +32,7 @@ package-dir = {"tgsaler" = "tgsaler"}
 "tgsaler" = ["**"]
 
 [project.scripts]
-tgsalersetup = "tgsaler.setuper.config_creator:__main__:start_main"
+tgsalersetup = "tgsaler.setuper.config_creator.__main__:start_main"
 tgsalerconfig = "tgsaler.setuper.config_creator:create_config"
 tgsalercrdb = "tgsaler.setuper.bd_creator:create_db"
 tgsaler = "tgsaler.__main__:start_main"
