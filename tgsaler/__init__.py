@@ -378,8 +378,8 @@ def category_go(message):
             usr["price"] = 0
             save_user_data(usr)
         else:
-            for m in "Такой категории не существует,\n попробуйте еще раз":
-                bot.send_message(cid, m)
+            m = "Такой категории не существует,\n попробуйте еще раз"
+            bot.send_message(cid, m)
 
     usr = get_usr_byid(message.from_user.id)
     usr["prev"] = message.text
