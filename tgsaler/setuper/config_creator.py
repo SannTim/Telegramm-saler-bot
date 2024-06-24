@@ -3,7 +3,7 @@ import json
 
 def create_config(): 
     props = {}
-    with open(os.path.abspath(os.path.join(os.path.dirname(__file__),  "../tgsaler/config.json"), "w")) as f:
+    with open(os.path.abspath(os.path.join(os.path.dirname(__file__),  "../tgsaler/config.json")), "w") as f:
         props["token"] = input("Введите токен бота:\n")
         props["Password"] = input("Введите пароль администратора:\n")
         mes = input("Введите приветственные сообщение(конец --- пустая строка):\n")
