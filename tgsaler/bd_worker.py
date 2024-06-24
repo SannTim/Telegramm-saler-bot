@@ -1,6 +1,4 @@
-"""
-Модуль, реализующий запросы к бд.
-"""
+"""Модуль, реализующий запросы к бд."""
 
 import psycopg2 as sql
 from prettytable import PrettyTable
@@ -37,6 +35,8 @@ def create_connection(
 
 
 class db_controller:
+    """Класс для совершения манипуляций с базой данных."""
+    
     def __init__(
         self,
         host="localhost",

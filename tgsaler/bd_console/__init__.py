@@ -1,6 +1,4 @@
-"""
-Модуль, реализующий консоль.
-"""
+"""Модуль, реализующий консоль."""
 
 from tgsaler import bd_worker
 import cmd
@@ -24,16 +22,12 @@ LOCALES = {
 
 
 class app(cmd.Cmd):
-    """
-    Класс, реализующий интерфейс командной строки.
-    """
+    """Класс, реализующий интерфейс командной строки."""
 
     prompt = "> "
 
     def preloop(self) -> None:
-        """
-        Настройка перед запуском интерактивной сессии.
-        """
+        """Настройка перед запуском интерактивной сессии."""
         self.bd = bd_worker.db_controller()
         return super().preloop()
 
@@ -176,9 +170,7 @@ class app(cmd.Cmd):
             self.help_lang()
 
     def help_lang(self):
-        """
-        Выводит справку по команде lang.
-        """
+        """Выводит справку по команде lang."""
         print(_("Changes language to chosen one"))
 
     def do_showproducts(self, args):
@@ -198,30 +190,22 @@ class app(cmd.Cmd):
         print(self.bd.show_category())
 
     def help_showproducts(self):
-        """
-        Выводит справку по команде showproducts.
-        """
+        """Выводит справку по команде showproducts."""
         print(_("Shows products table"))
         print(_("Usage: showproducts"))
 
     def help_showcategory(self):
-        """
-        Выводит справку по команде showcategory.
-        """
+        """Выводит справку по команде showcategory."""
         print(_("Shows category table"))
         print(_("Usage: showcategory"))
 
     def help_addcategory(self):
-        """
-        Выводит справку по команде addcategory.
-        """
+        """Выводит справку по команде addcategory."""
         print(_("Adds new category"))
         print(_("Usage: addcategory name <name>"))
 
     def help_addproduct(self):
-        """
-        Выводит справку по команде addproduct.
-        """
+        """Выводит справку по команде addproduct."""
         print(_("Adds new product"))
         print(
             _(
@@ -230,16 +214,12 @@ class app(cmd.Cmd):
         )
 
     def help_delproduct(self):
-        """
-        Выводит справку по команде delproduct.
-        """
+        """Выводит справку по команде delproduct."""
         print(_("Deletes product"))
         print(_("Usage: delproduct name <name>"))
 
     def help_editproduct(self):
-        """
-        Выводит справку по команде editproduct.
-        """
+        """Выводит справку по команде editproduct."""
         print(_("Edits new product"))
         print(
             _(
@@ -248,9 +228,7 @@ class app(cmd.Cmd):
         )
 
     def help_delcategory(self):
-        """
-        Выводит справку по команде delcategory.
-        """
+        """Выводит справку по команде delcategory."""
         print(_("Deletes category"))
         print(_("Usage: delcategory name <name>"))
 

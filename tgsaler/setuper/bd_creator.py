@@ -1,3 +1,4 @@
+"""Создание базы данных и таблиц для программы."""
 import psycopg2
 from psycopg2 import sql, OperationalError
 import sys
@@ -5,6 +6,7 @@ import sys
 
 # Подключение к PostgreSQL
 def create_db():
+    """Создание базы данных и таблиц для программы."""
     if len(sys.argv) > 1:
         user = sys.argv[1]
         password = ""

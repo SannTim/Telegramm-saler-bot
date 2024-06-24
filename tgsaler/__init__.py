@@ -1,7 +1,4 @@
-"""
-Модуль работы телеграмм бота
-с клиентом и продавцом
-"""
+"""Модуль работы телеграмм бота с клиентом и продавцом."""
 
 import telebot
 from telebot import types
@@ -41,10 +38,7 @@ menu_catigories = []
 
 
 def update_markups():
-    """
-    Функция обновления обновления клавиатурной разметки.
-    """
-
+    """Функция обновления обновления клавиатурной разметки."""
     global group_markup, groupdone_markup, deliver_markup, bin_markup, group_list
     tmp_menu_categories = [(i[0], i[1]) for i in bd.get_categories()]
     # print(tmp_menu_categories)
@@ -72,20 +66,14 @@ def update_markups():
 
 
 def updater():
-    """
-    Функция, вызывающая функцию update_markups() каждые 10 секунд.
-    """
-
+    """Функция, вызывающая функцию update_markups() каждые 10 секунд."""
     while True:
         update_markups()
         time.sleep(10)
 
 
 def orders_send():
-    """
-    Функция отправления сообщения с заказами администраторам.
-    """
-
+    """Функция отправки сообщения с заказами администраторам."""
     orders_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     msg = "\n".join(all_orders)
     if len(all_orders) == 0:
@@ -107,7 +95,6 @@ def form_bin_mes(usr):
     Returns:
         str: Текст с информацией о корзине пользователя.
     """
-
     ans = "В вашей корзине сейчас:\n"
     for el in usr["bin"]:
         if usr["bin"][el] != 1:
@@ -130,7 +117,6 @@ def form_order(usr, st, id, name):
     Returns:
         str: Текст заказа для пользователя.
     """
-
     # print(id)
     ans = str(id) + " заказ:\n"
     ans += "От пользователя: @" + name + "\n"
@@ -143,10 +129,12 @@ def form_order(usr, st, id, name):
 
 
 def get_usr_byid(id):
+    """Достает данные о пользователе из базы данных."""
     return bd.get_user_by_id(id)
 
 
 def save_user_data(data):
+    """Записывает данные о пользователе в базу данных."""
     bd.edit_user_by_data(data)
 
 
@@ -170,7 +158,6 @@ class group:
         Args:
             group_data (list): Список данных о товарах в группе.
         """
-
         global all_positions
         self.markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         self.markup.add(types.KeyboardButton("Назад"))
@@ -198,7 +185,6 @@ class group:
         Returns:
             bool: Результат проверки.
         """
-
         return x in self.positions
 
     def markup(self):
@@ -208,7 +194,6 @@ class group:
         Returns:
             telebot.types.ReplyKeyboardMarkup: Маркап клавиатуры.
         """
-
         return self.markup
 
 

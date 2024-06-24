@@ -1,7 +1,9 @@
+"""Дополнительные функции."""
 import configparser
 
 
 def ini_to_dict(file_path):
+    """Считывает файл .ini и переводит его в словарь."""
     config = configparser.ConfigParser()
     config.read(file_path)
 
