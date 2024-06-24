@@ -11,8 +11,8 @@ print(pathlib.Path(__file__).parents[2].resolve().as_posix())
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'Telegramm-saler-bot'
-copyright = '2024, Mark, Timosha, Maria'
-author = 'Mark, Timosha, Maria'
+copyright = '2024, Mark, SannTim, Maria'
+author = 'Mark, SannTim, Maria'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
