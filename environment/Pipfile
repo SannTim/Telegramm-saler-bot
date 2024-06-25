@@ -13,6 +13,7 @@ doit = "*"
 flake8 = "*"
 pycodestyle = "*"
 pydocstyle = "*"
+sphinx = "*"
 
 [dev-packages]
 
