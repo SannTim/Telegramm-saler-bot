@@ -41,7 +41,7 @@ def update_markups():
     """Функция обновления обновления клавиатурной разметки."""
     global group_markup, groupdone_markup, deliver_markup, bin_markup, group_list, menu_catigories
     tmp_menu_categories = [(i[0], i[1]) for i in bd.get_categories()]
-    menu_catigories = [i[1] for el in tmp_menu_categories]
+    menu_catigories = [i[1] for i in tmp_menu_categories]
     # print(tmp_menu_categories)
     group_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     group_markup.add(types.KeyboardButton("Корзина"))
