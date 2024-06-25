@@ -267,7 +267,7 @@ def category_go(message):
         prod = bd.get_product_data(",".join(message.text.split(",")[:-1]))
         # print(prod)
         try:
-            im = open("images/" + prod["photo"], "rb")
+            im = open(prod["photo"], "rb")
             bot.send_photo(cid, im)
         except Exception:
             bot.send_message(cid, "Фото появится в сокром времени!")
